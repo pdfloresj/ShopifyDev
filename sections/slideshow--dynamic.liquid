@@ -1,0 +1,266 @@
+{% liquid
+  assign slides = section.blocks
+  assign settings = section.settings
+%}
+
+<section
+  class="
+    slideshow slideshow--{{ settings.aspect_ratio }}
+    borders-nfw
+    {% if settings.enable_full_width %}full-width{% endif %}
+  "
+  data-section-id="{{ section.id }}"
+  data-section-type="slideshow"
+  data-autoplay="{{ settings.duration_autoplay | times: 1000 }}"
+  data-parallax="{{ settings.enable_parallax }}"
+  data-total-slides="{{ slides.size }}"
+  style="
+    --color-dot: {{ settings.color_subheading }};
+  "
+>
+  <div class="slideshow__slides is-hidden" data-slider>
+    {%- if slides.size > 0 -%}
+      {%- for slide in slides -%}
+        {% comment %}
+          Blocks in the new theme architecture have a 'value' key representing
+          the default type of the block. If it exists use it, otherwise
+          fall back in the case of legacy architecture.
+        {% endcomment %}
+        {%- assign image = slide.settings.image -%}
+        {%- assign video = slide.settings.video_url -%}
+
+        <div
+          class="slideshow__cell"
+          data-slide
+          data-index="{{ forloop.index0 }}"
+          {{ slide.shopify_attributes }}
+        >
+          <div class="slideshow__asset slideshow__asset--{{ settings.aspect_ratio }}">
+            {% if video != blank %}
+              <video class="slideshow__video" autoplay playsinline loop muted src="{{ video }}"></video>
+            {% endif %}
+
+            {%- if image != blank -%}
+              {% render 'image-mobile-optimized' with
+                image: image,
+                wrapper_class: 'slideshow__image-wrapper slideshow__parallax-wrapper',
+                disable_style: true
+              %}
+            {%- endif -%}
+
+            {%- if image == blank and video == blank -%}
+              <div class="placeholder-image">
+                {{ 'image' | placeholder_svg_tag: 'placeholder-svg' }}
+              </div>
+            {%- endif -%}
+          </div>
+
+          <div class="slideshow__overlay">
+            {% render 'block-overlay' with
+              block: slide,
+
+              meta: slide.settings.meta,
+              heading: slide.settings.title,
+              subheading: slide.settings.subheading,
+              link: slide.settings.link,
+              link_text: slide.settings.link_text,
+
+              alignment: slide.settings.alignment,
+              max_width_content: slide.settings.max_width_subheading,
+
+              opacity: settings.opacity_overlay,
+              color_background: settings.color_overlay,
+              color_background_button: settings.color_background_button,
+              color_meta: settings.color_meta,
+              color_heading: settings.color_heading,
+              color_subheading: settings.color_subheading,
+              color_text_button: settings.color_text_button
+            %}
+          </div>
+        </div>
+      {%- endfor -%}
+    {%- endif -%}
+  </div>
+</section>
+
+
+{% schema %}
+  { 
+    "name": "Slideshow",
+    "class": "grid-section offset-section slideshow-section",
+    "settings": [
+      {
+        "type": "select",
+        "id": "aspect_ratio",
+        "label": "Aspect ratio",
+        "options": [
+          { "value": "full_height", "label": "Full height" },
+          { "value": "3_2", "label": "3:2" }
+        ],
+        "default": "full_height"
+      },
+      {
+        "id": "opacity_overlay",
+        "type": "range",
+        "label": "Overlay opacity",
+        "min": 0,
+        "max": 100,
+        "step": 10,
+        "default": 60,
+        "unit": "%"
+      },
+      {
+        "id": "color_overlay",
+        "type": "color",
+        "label": "Overlay",
+        "default": "#000000"
+      },
+      {
+        "id": "color_heading",
+        "type": "color",
+        "label": "Heading",
+        "default": "#ffffff"
+      },
+      {
+        "id": "color_subheading",
+        "type": "color",
+        "label": "Subheading",
+        "default": "#b8b8b8"
+      },
+      {
+        "id": "color_background_button",
+        "type": "color",
+        "label": "Button background",
+        "default": "#000000"
+      },
+      {
+        "id": "color_text_button",
+        "type": "color",
+        "label": "Button text",
+        "default": "#ffffff"
+      },
+      {
+        "type": "range",
+        "id": "duration_autoplay",
+        "label": "Time between slides",
+        "unit": "s",
+        "min": 0,
+        "max": 10,
+        "step": 2,
+        "default": 4
+      },
+      {
+        "type": "checkbox",
+        "id": "enable_parallax",
+        "label": "Enable parallax",
+        "default": false
+      },
+      {
+        "id": "enable_full_width",
+        "type": "checkbox",
+        "label": "Enable full width",
+        "info": "If enabled this section will span the entire width of the window",
+        "default": false
+      }
+    ],
+    "blocks": [
+      {
+        "type": "image",
+        "name": "Slide",
+        "limit": 5,
+        "settings": [
+          {
+            "id": "image",
+            "type": "image_picker",
+            "label": "Image"
+          },
+          {
+            "type": "url",
+            "id": "video_url",
+            "label": "Video link",
+            "info": "Direct link to .mp4 video file. [Learn more here](https://help.fluorescent.co/ira/full-width-image.html#upload-a-video)."
+          },
+          {
+            "id": "meta",
+            "type": "text",
+            "label": "Mini heading"
+          },
+          {
+            "id": "title",
+            "type": "text",
+            "label": "Heading"
+          },
+          {
+            "id": "subheading",
+            "type": "richtext",
+            "label": "Subheading"
+          },
+          {
+            "id": "max_width_subheading",
+            "type": "range",
+            "label": "Text max width",
+            "min": 20,
+            "max": 50,
+            "step": 2,
+            "default": 30
+          },
+          {
+            "id": "link_text",
+            "type": "text",
+            "label": "Button label"
+          },
+          {
+            "id": "link",
+            "type": "url",
+            "label": "Button link"
+          },
+          {
+            "id": "alignment",
+            "type": "select",
+            "label": "Text alignment",
+            "options": [
+              { "label": "Top left", "value": "left_top" },
+              { "label": "Top center", "value": "center_top" },
+              { "label": "Top right", "value": "right_top" },
+              { "label": "Middle left", "value": "left_center" },
+              { "label": "Middle center", "value": "center_center" },
+              { "label": "Middle right", "value": "right_center" },
+              { "label": "Bottom left", "value": "left_bottom" },
+              { "label": "Bottom center", "value": "center_bottom" },
+              { "label": "Bottom right", "value": "right_bottom" }
+            ],
+            "default": "left_center"
+          }
+        ]
+      }
+    ],
+    "presets": [
+      {
+        "name": "Slideshow",
+        "category": "Image",
+        "blocks": [
+          {
+            "type": "image",
+            "settings": {
+              "meta": "Slideshow",
+              "title": "This is your slideshow",
+              "subheading": "<p>Use it to make a dramatic first impression with high-quality imagery and minimal text. Using the button below to link to whatever is most appropriate.</p>",
+              "link": "#",
+              "link_text": "Shop now"
+            }
+          },
+          {
+            "type": "image",
+            "settings": {
+              "meta": "Slideshow",
+              "title": "This is your slideshow",
+              "subheading": "<p>Use it to make a dramatic first impression with high-quality imagery and minimal text. Using the button below to link to whatever is most appropriate.</p>",
+              "link": "#",
+              "link_text": "Shop now"
+            }
+          }
+        ]
+      }
+    ]
+  }
+{% endschema %}

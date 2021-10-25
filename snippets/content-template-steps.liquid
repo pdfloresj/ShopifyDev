@@ -1,0 +1,37 @@
+{% assign bg_color = block.settings.background_color %}
+{% assign block_img = block.settings.img %}
+{% assign arrow_type = block.settings.arrow_type %}
+{% assign subheader = block.settings.subheader %}
+{% assign title = block.settings.title %}
+{% assign content = block.settings.content %}
+{% assign link_label = block.settings.link_label %}
+{% assign link_url = block.settings.link_url %}
+
+<section id="block--{{ block.id }}" class="content-template__steps Section Section--spacingNormal" {{ block.shopify_attributes }}>
+  <div class="step Container Container--productTemplate Content-Blocks">
+    <div class="step__text">
+      {% if subheader %}
+        <div class="step__subHeader">
+          <span>{{ subheader }}</span>
+          {% if arrow_type == 'solid' %}
+            <span class="step__arrow">{% render 'icon' with 'solid-arrow-right' %}</span>
+          {% elsif arrow_type == 'line' %}
+            <span class="step__arrow">{% render 'icon' with 'icon-arrow-right' %}</span>
+          {% endif %}
+        </div>
+      {% endif %}
+      {% if title %}<h3 class="step__title h3">{{ title }}</h3>{% endif %}
+      {% if content %}<div class="step__content p2">{{ content }}</div>{% endif %}
+      {% if link_label %}<div class="step__link"> <a class="Link" href="{{ link_url }}">{{ link_label }}</a></div>{% endif %}
+
+    </div>
+    <div class="step__image">
+      {% if block_img %}<img src="{{ block_img | img_url: '400x400' }}" alt="{{ block_img.alt | escape }}">{% endif %}
+    </div>
+  </div>
+  <style>
+    #block--{{ block.id }} .step {
+      background-color: {{ bg_color }};
+    }
+  </style>
+</section>

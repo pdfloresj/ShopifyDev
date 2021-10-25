@@ -1,0 +1,24 @@
+{% if template == 'product' %}
+  <script type="text/javascript">
+    window.zESettings = {
+      webWidget: {
+        chat: {
+          connectOnPageLoad: false        
+        },
+        offset: {
+          vertical: '90px'
+        }
+      }
+    };
+  </script>
+{% else %}
+  <script type="text/javascript">
+    window.zESettings = {
+      webWidget: {
+        chat: {
+          connectOnPageLoad: false        
+        }
+      }
+    };
+  </script>
+{% endif %}

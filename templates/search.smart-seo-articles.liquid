@@ -1,0 +1,12 @@
+{%- layout none -%}
+
+{%- paginate search.results by 10 -%}
+{%- if search.performed -%}
+{"articles": [
+    {%- for item in search.results -%}
+        {"id":{{ item.id | json }},"title":{{ item.title | json }},"handle":{{ item.handle | json }}}
+        {%- unless forloop.last %},{% endunless -%}
+    {%- endfor -%}
+]}
+{%- endif -%}
+{%- endpaginate -%}

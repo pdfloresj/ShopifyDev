@@ -1,0 +1,19 @@
+{% assign bg_color = block.settings.background_color %}
+{% assign subheader = block.settings.subheader %}
+{% assign title = block.settings.title %}
+{% assign paragraph = block.settings.paragraph %}
+
+<section id="block--{{ block.id }}" class="content-template__steps-header Section Section--spacingNormal" {{ block.shopify_attributes }}>
+  <div class="steps-header Container Container--productTemplate Content-Blocks">
+    <div class="steps__header">
+      <span class="steps__subHeading">{{ subheader }}</span>
+      <h2 class="steps__title">{{ title }}</h2>
+      <div class="steps__content p1">{{ paragraph }}</div>
+    </div>
+  </div>
+  <style>
+    #block--{{ block.id }} .steps-header {
+      background-color: {{ bg_color }};
+    }
+  </style>
+</section>

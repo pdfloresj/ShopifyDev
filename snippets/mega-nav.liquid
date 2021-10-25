@@ -1,0 +1,57 @@
+{%
+  liquid
+  if nav.settings.mega_nav_featured_image != blank
+    assign show_images = false
+  endif
+%}
+
+
+{% assign isFlower = "" %}
+{% if link.title == "Wedding Colors" %}
+ {% assign isFlower = "wedding--flowers" %}
+{% endif %}
+
+
+<nav class="mega-nav {{isFlower}}" data-mega-nav data-show-images="{{ show_images }}" data-id="{{ nav.id }}" {{ nav.shopify_attributes }}>
+  <div class="mega-nav__overlay" data-overlay></div>
+	
+  <div class="mega-nav__container">
+    <ul class="mega-nav__list">
+      {% comment %}<li class="mega-nav__heading"><a href="{{ link.url }}">{{ link.title }}</a></li> {% endcomment %}
+      {%- for link in link.links -%}
+        {%- assign has_children = false -%}
+        {%- if link.links.size > 0 -%}
+          {%- assign has_children = true -%}
+        {%- endif -%}
+        <li class="mega-nav__item">
+          <a
+            href="{{ link.url }}"
+            class="
+              {% if link.active %}active{% endif %}
+              {% if has_children %}no-transition{% endif %}
+            "
+            {% if has_children %}data-trigger="{{ link.handle }}"{% endif %}
+            {% if link.type == 'collection_link' %}data-collection="{{ link.object.handle }}"{% endif %}
+          > 	
+				{% comment %} Check If Link has a Hex value{% endcomment %} 
+            	{% assign hex = collections[link.object.handle].metafields.airf.hex | strip %}
+              {% if hex != blank and hex != '&nbsp' %}
+                <div class="flower__color__group">
+                  <div class="flower--colour" style="background-color:#{{ hex }}"></div>
+                  <div>{{ link.title }}</div>
+                </div>
+              {% else %}
+                <span>{{ link.title }}</span>
+              {% endif %}
+            	 
+            	{% comment %} 
+              {% if has_children %}
+                {% render 'icon' with icon: 'arrow-drop-down' %}
+              {% endif %}
+             {% endcomment %}
+          </a>
+        </li>
+      {%- endfor -%}
+    </ul>
+  </div>
+</nav>

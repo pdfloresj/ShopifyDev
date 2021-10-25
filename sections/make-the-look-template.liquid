@@ -1,0 +1,662 @@
+{% liquid 
+  assign show_collection_description = section.settings.show_collection_description
+
+  assign collection_description = false
+  if section.settings.show_collection_description == true
+    assign collection_description = collection.description
+  endif
+
+  assign cat_string = blank
+  for tag in collection.all_tags
+    if tag contains '_'
+      assign category = tag | split: '_' | first
+      assign cat_string = cat_string | append: '|' | append: category
+    endif
+  endfor
+  assign categories = cat_string | remove_first: '|' | split: '|' | uniq
+%}
+
+<section class="collection  s-inline-section">
+  <div
+    class="collection__content__wrapper"
+    data-js-container
+  >
+    <div class="collection__description__wrapper">
+      <div class="collection__image">
+        {% if collection.template_suffix == 'make-the-look' or collection.template_suffix == 'wedding-stories'%}
+          {% render 'collection-image-gallery' with
+            collection: collection
+          %}
+        {% elsif collection.template_suffix == 'wedding-collections' %}
+          {% if collection.image %}
+            <img src="{{ collection.image | img_url: '468x468' }}" alt="" />
+          {% endif %}
+        {% endif %}
+      </div>
+      {% if collection.template_suffix == 'make-the-look' %}
+        <div class="collection__simple-header teal--background">
+          <h1 class="collection__heading ff-heading fs-heading-base">{{ collection.title }}</h1>
+          {% if show_collection_description and collection.description != blank %}
+            <div class="collection__description fs-body-base">
+              {{ collection.description }}
+            </div>
+          {% endif %}
+        </div>
+        <div class="collection__recipe__message" id="collection-recipe-email-sent" style="display:none;">
+          {{ 'general.make_this_look.email_sent' | t }}
+        </div>
+        <div class="collection__recipe__message collection__recipe__message--warning" id="collection-recipe-please-sign-in" style="display:none;">
+          {{ 'general.make_this_look.sign_in' | t }} <a href="#"><u>{{ 'general.make_this_look.sign_in_link' | t }}</u></a> {{ 'general.make_this_look.sign_in_2' | t }}
+        </div>
+        <div class="collection__recipe__container">
+          <div class="collection__recipe__title">
+            <h2 class="collection__recipe__title-text">{{ 'general.make_this_look.arrangement_title' | t }}</h2>
+            <button id="recipe-email-button" type="button" class="btn collection__recipe__title-button">{{ 'general.make_this_look.send_me_recipe' | t }}</button>
+          </div>
+          <div class="collection__recipe">
+            <div class="collection__recipe__item collection__recipe__header">
+              <div class="collection__recipe__item__col">{{ 'general.make_this_look.arrangement' | t | upcase }}</div>
+              <div class="collection__recipe__item__col">{{ 'general.make_this_look.pieces' | t | upcase }}</div>
+              <div class="collection__recipe__item__col">{{ 'general.make_this_look.stems' | t | upcase }}</div>
+              <div class="collection__recipe__item__col">{{ 'general.make_this_look.total_stems' | t | upcase }}</div>
+              <div class="collection__recipe__item__col">{{ 'general.make_this_look.recipe' | t | upcase }}</div>
+            </div>
+          </div>	
+        </div>
+      {% endif %}
+      {% if collection.template_suffix == 'wedding-collections' %}
+        <div class="collection__simple-header teal--background">
+          <h1 class="collection__heading ff-heading fs-heading-base">{{ collection.title }}</h1>
+          {% if show_collection_description and collection.description != blank %}
+            <div class="collection__description fs-body-base">
+              {{ collection.description }}
+            </div>
+          {% endif %}
+        </div>	
+      {% endif %}
+    </div>
+    <div class="collection__main-area">
+      <div class="collection__window">
+        <div class="collection__loading" data-js-loading>
+          {% render 'loader' %}
+        </div>
+        <div id="root" class="collection__main" data-js-partial>
+          <div class="collection__top-row">
+            {% render 'collection-top-bar' with
+              categories: categories
+            %}
+          </div>
+          <form action="/cart" id="make--look--form" method="post">
+            {% if collection.template_suffix == 'make-the-look' %}
+              <h1 class="make__look__header">Make This Look</h1>
+            {% elsif collection.template_suffix == 'wedding-collections' %}
+              <h1 class="make__look__header">Wedding Collection Options</h1>
+            {% else %}
+              <div class="collection__ws-description grey--background">
+                <h1 class="collection__heading collection__ws-heading ff-heading fs-heading-base">{{ collection.title }}</h1>
+                {% if show_collection_description and collection.description != blank %}
+                  <div class="collection__description collection__ws-description__content fs-body-base">
+                    {{ collection.description }}
+                  </div>
+                  <a class="collection__description__more">{{ 'general.filters.show_more' | t }}</a>
+                {% endif %}
+              </div>
+            {% endif %}
+            <div class="make__look__container">
+              {% for product in collection.products %}
+                {% liquid 
+                  for tag in product.tags
+                    if tag contains 'ProductId'
+                      assign product_handle = tag | remove: "ProductId_"
+                      break
+                    endif
+                  endfor
+                %}
+              {% if product.metafields.airf.is_wcp %}
+                {% for variant in product.variants %}
+                  {% assign title = product.title | remove: "Wedding Collection" | append: ' ' | append: variant.title %}
+                  <div class="flex--box" data-product-handle="{{ product_handle }}">
+                    <div class="parent--image">
+                      <a href="{{ variant.url | collection }}">
+                        <img src="{{ variant.image | default: product.featured_image | img_url: 'small' }}" alt="{{ title }}" />
+                      </a>
+                    </div>
+                    <div>
+                      <a href="{{ variant.url | collection }}">
+                        <h4 class="collection__product__title">{{ title }}</h4>
+                      </a>
+                      <p class="collection__product__message"></p>
+                        {% if variant.available %}
+                          <div class="collection__wrapper" data-variant-id="{{variant.id}}">
+                            <div class="collection__counter">
+                              <a class="collection__counter__button collection__counter__button--decrement" data-variantid="{{ variant.id }}" href="#">
+                                {% render 'icon' with icon: 'remove' %}
+                              </a>
+                              <input value="1" class="input-{{ product_handle }} collection__counter__input" data-product-handle="{{ product_handle }}" data-variantid="{{ variant.id }}" name="updates[{{ variant.id }}]" onfocus="this.select()" class="quantity field" min="0" {% unless variant.inventory_management == blank or variant.inventory_policy == 'continue' %} max="{{ variant.inventory_quantity }}" {% endunless %} type="text" value="0" tabindex="1" />
+                              <a class="collection__counter__button collection__counter__button--increment" data-variantid="{{ variant.id }}" href="#">
+                                {% render 'icon' with icon: 'add' %}
+                              </a>
+                            </div> 	
+                            <div class="variant__title">
+                              <span class="variant__title__price">{{ variant.price | money }}</span>
+                            </div>
+                          </div>
+                        {% endif %}
+                      {% assign suggested_collection = null %}
+                      {% assign all_flowers = linklists.main-menu.links | where: "title", "All Flowers" %}
+                      {% assign flower_collections = all_flowers.first.links %}
+                      {% for product_collection in product.collections %}
+                        {% for all_collection in flower_collections %}
+                          {% if all_collection.title == product_collection.title %}
+                            {% assign suggested_collection = all_collection %}
+                          {% endif %}
+                        {% endfor %}
+                      {% endfor %}
+                      {% if suggested_collection != null and suggested_collection != "" %}
+                        <a class="make__look__suggestion" data-product-handle="{{ product_handle }}" href="{{ suggested_collection.url }}">{{ 'products.product.browse_similar_flowers' | t }}</a>
+                      {% endif %}
+                    </div>
+                  </div> 
+                {% endfor %}
+              {% else %}
+              <div class="flex--box" data-product-handle="{{ product_handle }}">
+                <div class="parent--image">
+                  <a href="{{ product.url | collection }}">
+                    <img src="{{product.image | default: product.featured_image | img_url: 'small' }}" alt="{{ product.title | escape }}" />
+                  </a>
+                </div>
+                <div>
+                  <a href="{{ product.url | collection }}">
+                    <h4 class="collection__product__title">{{product.title}}</h4>
+                  </a>
+                  <p class="collection__product__message"></p>
+                  {% for variant in product.variants %}
+                    {% if variant.available %}
+                      <div class="collection__wrapper" data-variant-id="{{variant.id}}">
+                        
+                        {% if collection.template_suffix == 'wedding-collections' %}
+                          {% assign itemCount = 0 %}
+                        {% else %}
+                          {% if forloop.index == 1 %}
+                            {% assign itemCount = 1 %}
+                          {% else %}
+                            {% assign itemCount = 0 %}
+                          {% endif %}
+                        {% endif %}
+                        <div class="collection__counter">
+                          <a class="collection__counter__button collection__counter__button--decrement" data-variantid="{{ variant.id }}" href="#">
+                            {% render 'icon' with icon: 'remove' %}
+                          </a>
+                          <input value="{{itemCount}}" class="input-{{ product_handle }} collection__counter__input" data-product-handle="{{product_handle}}" data-variantid="{{ variant.id }}" name="updates[{{ variant.id }}]" onfocus="this.select()" class="quantity field" min="0" {% unless variant.inventory_management == blank or variant.inventory_policy == 'continue' %} max="{{ variant.inventory_quantity }}" {% endunless %} type="text" value="0" tabindex="1" />
+                          <a class="collection__counter__button collection__counter__button--increment" data-variantid="{{ variant.id }}" href="#">
+                            {% render 'icon' with icon: 'add' %}
+                          </a>
+                        </div> 	
+                        <div class="variant__title">
+                          <a href="{{ variant.url | collection }}">
+                            {% unless variant.title contains 'Default' %}  {{ variant.title }}{% endunless %}
+                          </a>
+                          <span class="variant__title__price">{{ variant.price | money }}</span>
+                        </div>
+                      </div>
+                    {% endif %}
+                  {% endfor %}
+                  {% if collection.template_suffix != 'wedding-collections' %}
+                  {% assign suggested_collection = null %}
+                  {% assign all_flowers = linklists.main-menu.links | where: "title", "All Flowers" %}
+                  {% assign flower_collections = all_flowers.first.links %}
+                  {% for product_collection in product.collections %}
+                    {% for all_collection in flower_collections %}
+                      {% if all_collection.title == product_collection.title %}
+                        {% assign suggested_collection = all_collection %}
+                      {% endif %}
+                    {% endfor %}
+                  {% endfor %}
+                  {% if suggested_collection != null and suggested_collection != "" %}
+                    <a class="make__look__suggestion" data-product-handle="{{ product_handle }}" href="{{ suggested_collection.url }}">{{ 'products.product.browse_similar_flowers' | t }}</a>
+                  {% endif %}
+                  {% endif %}
+                </div>
+              </div> 
+              {% endif %}
+              {% endfor %}
+            </div>
+            <div class="make__look__footer">
+              <div class="pf-container pf-container--datepicker" id="datepicker-container--static">
+                <div class="make__look__footer__event-type pf-element">
+                  <label for="event_type" class="pf-label">
+                    <span>{{ 'event_date.event_type' | t }}</span>
+                  </label>
+                  <select name="event_type" class="pf-input" id="event_type--bundle">
+                    {% render 'event-type-options' %}
+                  </select>
+                  <div class="pf-icon" data-icon>{% render 'icon' with icon: 'arrow-drop-down' %}</div>
+                </div>
+                <div class="pf-element make__look__footer__datepicker">
+                  <label class="pf-label" for="datepicker--static">
+                    <span>{{ 'event_date.event_date' | t }}</span>
+                  </label>
+                  <input placeholder="{{ 'delivery_date.select' | t }}" id="datepicker--bundle" type="text" class="pf-input pf-input-datepicker"/>
+                  <div id="datepicker--bundle--error" class="pf-input-datepicker-msg"></div>
+                </div>
+              </div>   
+              <div class="add--to--cart--button">
+                <button type="submit" name="add" id="add-to-cart-button" aria-label="Add to cart" class="btn btn--full product-form__cart-submit" data-add-to-cart="" data-lang-available="Add to cart" data-lang-unavailable="Unavailable" data-lang-sold-out="Sold out">
+                  <span data-add-to-cart-text="">
+                    Add to cart
+                  </span>
+                  <div class="btn__loading-wrap">
+                    <div class="btn__loading-bar"></div>
+                  </div>
+                </button>	
+              </div>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div><!-- end collection__main-area -->
+  </div>
+
+  {% render 'collection-modal' with
+    filter_style: section.settings.filter_style,
+    categories: categories,
+    show_sort: section.settings.show_sort
+  %}
+</section>
+
+
+<script>
+  $(function () {
+    /* --------------------------------- Models --------------------------------- */
+
+    let deliveryDateInfoFromAPI = {};
+    let productDeliveryDate = {};
+
+    /* ----------------------------- Initial Render ----------------------------- */
+
+    // Render date picker
+    $("#datepicker--bundle").datepicker({
+      minDate: "+1d",
+      maxDate: "+2y",
+      onSelect: handleSelectDate
+    });
+
+    // Set the current selected date from local storage
+    const existingEventDate = localStorage.getItem(`event-date-${'{{ customer.id }}'}`);
+    if (existingEventDate) {
+      $("#datepicker--bundle").val(existingEventDate);
+      handleSelectDate(existingEventDate);
+    }
+    
+    // Set the current selected event type from local storage
+    const existingEventType = localStorage.getItem(`event-type-${'{{ customer.id }}'}`);
+    if (existingEventType) $("#event_type--bundle").val(existingEventType);
+
+    /* -------------------------- Attach Event Handlers -------------------------- */
+
+    $("#make--look--form").submit(handleSubmitForm);
+    
+    $("#event_type--bundle").change(function() {
+      headerEventDate.setHeaderEventType($(this).val());
+    });
+
+    /* ----------------------- Date Picker Event Handlers ----------------------- */
+
+    // Validate the event date against all products on the page and render delivery dates for each products.
+    async function handleSelectDate(eventDate) {
+      headerEventDate.setHeaderEventDate(eventDate);
+
+      // Fetch the delivery date info from API on the initial load
+      const deliveryDateInfoExists = Object.keys(deliveryDateInfoFromAPI).length !== 0;
+      if (!deliveryDateInfoExists) await fetchAllDeliveryDateInfo();
+
+      // Map each product's delivery date after validating it against event date
+      Object.entries(deliveryDateInfoFromAPI).map(([handle, deliveryInfo]) => {
+        productDeliveryDate[handle] = calculateBestDeliveryDate(eventDate, deliveryInfo);
+      });
+
+      // Render each product's delivery date
+      $(".flex--box").each((index, elem) => {
+        const handle = $(elem).data('product-handle');
+        const deliveryDate = productDeliveryDate[handle];
+        if (deliveryDate) renderDisplayDate(elem, deliveryDate, handle);
+        else renderMissingDisplayDate(elem, handle);
+      });
+
+      const unavailableProductExists = Object.values(productDeliveryDate).some(val => !val);
+      if (unavailableProductExists) {
+        $('#datepicker--bundle--error').addClass("visible warning").text("{{ 'event_date.some_not_available' | t }}");
+      } else {
+        $('#datepicker--bundle--error').removeClass("visible warning").text("");
+      }
+    }
+
+    /**
+     * Calculates the best delivery date based on the product's delivery date 
+     * info and the event date
+     *
+     * @returns delivery date string if event date is within range, otherwise null.
+     */
+    function calculateBestDeliveryDate(eventDateStr, deliveryDateInfo) {
+      if (!deliveryDateInfo || !eventDateStr) return null;
+
+      const bestDeliveredBefore = deliveryDateInfo.best_delivery_day;
+      const eventDate = new Date(eventDateStr);
+      const optimalDate = deliveryDateUtil.subtractDays(eventDate, bestDeliveredBefore);
+
+      // Check few days before the optimal date
+      for (let i = 0; i < deliveryDateUtil.DELIVERY_DAYS_BEFORE_EVENT_LIMIT; i++) {
+        const suggestedDate = deliveryDateUtil.subtractDays(optimalDate, i);
+        if (deliveryDateUtil.validateDate(suggestedDate, deliveryDateInfo) && !deliveryDateUtil.isSaturdayDate(suggestedDate)) {
+          return $.datepicker.formatDate("mm/dd/yy", suggestedDate);
+        }
+      }
+
+      // Check days after the optimal date up to the day before the event day
+      for (let i = 1; i < bestDeliveredBefore; i++) {
+        const suggestedDate = deliveryDateUtil.addDays(optimalDate, i);
+        if (deliveryDateUtil.validateDate(suggestedDate, deliveryDateInfo)) {
+          return $.datepicker.formatDate("mm/dd/yy", suggestedDate);
+        }
+      }
+
+      return null;
+    }
+
+    // Parse a list of handles on the current page and get the delivery date info
+    // for all products.
+    async function fetchAllDeliveryDateInfo() {
+      const productHandles = [];
+      $('.flex--box').each((_, value) => {
+        if (!productHandles.includes($(value).data('product-handle'))) productHandles.push($(value).data('product-handle'));
+      });
+      await Promise.all(productHandles.map(handle => getDeliveryInfo(handle)));
+    }
+
+    // Get delivery date info from API by handle and store it.
+    async function getDeliveryInfo(productHandle) {
+      if (!deliveryDateInfoFromAPI[productHandle]) {
+        try {
+          const deliveryDateInfo = await deliveryDateUtil.getDeliveryDateInfo(productHandle);
+          deliveryDateInfoFromAPI[productHandle] = deliveryDateInfo;
+        } catch (e) {
+          console.erorr(e);
+          deliveryDateInfoFromAPI[productHandle] = null;
+        }
+      }
+    }
+
+    // Render product's display date
+    function renderDisplayDate(productElem, deliveryDate, handle) {
+      if ($(productElem).hasClass("disabled")) {
+        $(productElem).removeClass("disabled");
+        $(productElem).find(".collection__counter__input").first().val(1);
+      }
+      $(productElem)
+        .find(".collection__product__message")
+        .removeClass("error")
+        .addClass("visible")
+        .text(`${"{{ 'products.product.delivery_date' | t }}"}: ${deliveryDate}`);
+
+      $(`a[data-product-handle='${handle}']`).removeClass("visible");
+    }
+
+    // Disable quantity selector and show warning message if product cannot
+    // be delivered on the event date
+    function renderMissingDisplayDate(productElem, handle) {
+      $(productElem).addClass("disabled");
+      $(productElem)
+        .find(".collection__product__message")
+        .addClass("error visible")
+        .text("{{ 'delivery_date.not_available' | t }}");
+      $(productElem).find(".collection__counter__input").val(0);
+      $(`a[data-product-handle='${handle}']`).addClass("visible");
+    }
+
+    /* -------------------------- Add to Cart Handlers -------------------------- */
+
+    // Add items to cart with delivery date and handle. Then, navigate to the cart page.
+    async function handleSubmitForm(event) {
+      event.preventDefault();
+
+      const eventDate = $("#datepicker--bundle").val();
+      if (!validateDateStr(eventDate)) {
+        showDeliveryDateError();
+        return;
+      } else hideDeliveryDateError();
+
+      let items = [];
+      $(".collection__counter__input").each((index, elem) => {
+        const variantId = $(elem).data("variantid");
+        const quantity = $(elem).val();
+        const handle = $(elem).data("product-handle");
+        const deliveryDate = productDeliveryDate[handle];
+        if (deliveryDate && quantity > 0) {
+          items.unshift({
+            quantity: quantity,
+            id: variantId,
+            properties: {
+              "Delivery Date": deliveryDate,
+              _handle: handle,
+            }
+          });
+        }
+      });
+      
+      if (items.length !== 0) {
+        $("#add-to-cart-button").addClass("loading");
+        await $.post('/cart/add.js', { items: items }, null, "json");
+      }
+
+      window.location.href = '/cart';
+    }
+
+    // Validate if the entered delivery date string is in correct format
+    const validateDateStr = (dateStr) => {
+      let isValidated = true;
+      if (dateStr.length === 0) isValidated = false;
+      try {
+        $.datepicker.parseDate("mm/dd/yy", dateStr);
+      } catch (e) {
+        isValidated = false;
+      }
+      return isValidated;
+    }
+
+    const showDeliveryDateError = () => {
+      $('#datepicker--bundle--error')
+        .addClass("visible error")
+        .text("{{ 'delivery_date.invalid_event_date' | t }}");
+    }
+
+    const hideDeliveryDateError = () => {
+      if ($('#datepicker--bundle--error').hasClass("error")) {
+        $('#datepicker--bundle--error').removeClass("error warning").text(""); 
+      }
+    }
+  }); 
+</script>
+
+<script>
+  /* ------------------- Click handler for quantity selector ------------------ */
+
+  $(function () {
+    $(".collection__counter__button--increment").click(function() {
+      const variantId = $(this).data("variantid");
+      const inputElem = $(`input[name='updates[${variantId}]']`);
+      inputElem.val(parseInt(inputElem.val()) + 1);
+      return false;
+    });
+
+    $(".collection__counter__button--decrement").click(function() {
+      const variantId = $(this).data("variantid");
+      const inputElem = $(`input[name='updates[${variantId}]']`);
+      const currentVal = inputElem.val();
+      if (currentVal > 0) inputElem.val(parseInt(inputElem.val()) - 1);
+      return false;
+    });
+  })
+</script>
+<script>
+/* ----------------------------- Read more/less ----------------------------- */
+$(function() {
+  const SHOW_CHARACTER_LENGTH = 500;
+
+  const description = $(".collection__ws-description__content");
+  const toggle = $(".collection__description__more");
+
+  if (description.length) {
+    const value = description.html().replaceAll(/<\/p>(\s*)<p>/g, "<br><br>").replaceAll(/<p>|<\/p>/g, "").trim();
+    let shortValue = value;
+    if (value.length > SHOW_CHARACTER_LENGTH) {
+      let substrIndex = 500;
+      while (value[substrIndex] !== ' '&& substrIndex > 0) substrIndex--;
+      shortValue = `${value.substring(0, substrIndex)}...`;
+    } else description.html(value);
+
+
+    if (value.length !== shortValue.length) {
+      toggle.addClass("visible");
+      description.html(shortValue);
+    }
+    $(".collection__ws-description__content").addClass("visible");
+
+    toggle.click(() => {
+      if (toggle.html() === "{{ 'general.filters.show_more' | t }}") {
+        description.html(value);
+        toggle.html("{{ 'general.filters.show_less' | t }}")
+      } else {
+        description.html(shortValue);
+        toggle.html("{{ 'general.filters.show_more' | t }}")
+      }
+    })
+  }
+})
+</script>
+<script>
+/* --------------------------- Arrangement Recipes -------------------------- */
+$(function() {
+  const loadArrangementRecipes = async () => {
+    const query = encodeURIComponent("{{ collection.title }}");
+    const recipes = await $.get(`${window.theme.api_url}/arrangement-recipes?mtl_name=${query}`);
+    window.recipes = recipes;
+
+    const tableContainerElem = $(".collection__recipe");
+    recipes.forEach(recipe => tableContainerElem.append(renderRecipeItemRow(recipe)));
+    $(".collection__recipe__container").addClass("visible");
+  }
+
+  /* Render a single row of recipe */
+  const renderRecipeItemRow = (recipe) => {
+    const {mtl_recipe_id, arrangement_type, default_number_of_pieces, stems, products} = recipe;
+    return `
+      <div class="collection__recipe__item">
+        <div class="collection__recipe__item__col">${arrangement_type}</div>
+        <div class="collection__recipe__item__col"><input type="number" data-mtl-recipe-id-input="${mtl_recipe_id}" class="collection__recipe__quantity" value="${default_number_of_pieces}"/></div>
+        <div class="collection__recipe__item__col">${stems}</div>
+        <div class="collection__recipe__item__col" data-mtl-recipe-id="${mtl_recipe_id}">${stems * default_number_of_pieces} stems</div>
+        <div class="collection__recipe__item__col collection__recipe__item__hover">
+          {{ 'general.make_this_look.hover' | t }}
+          <div class="collection__recipe__detail">
+            <strong class="collection__recipe__detail__title">${arrangement_type}</strong>
+            <p>${stems} Stems Total</p>
+            <ul>  
+              ${products.map(product => `<li><strong>${product.quantity}</strong> ${product.name}</li>`).join("")}
+            </ul>
+          </div>
+        </div>
+      </div>
+    `; 
+  }
+
+  loadArrangementRecipes();
+
+  $(document).on("input", ".collection__recipe__quantity", function() {
+    const mtlRecipeId = $(this).data("mtl-recipe-id-input");
+    if ($(this).val() < 1) $(this).val(1);
+    const newQuantity = $(this).val();
+
+    const recipeIndex = recipes.findIndex(recipe => recipe.mtl_recipe_id === mtlRecipeId);
+    recipes[recipeIndex].default_number_of_pieces = newQuantity;
+    const totalQuantity = newQuantity * recipes[recipeIndex].stems;
+    $(`[data-mtl-recipe-id="${mtlRecipeId}"]`).text(`${totalQuantity} stems`);
+  })
+})
+</script>
+
+<script>
+$(function () {
+  const sendRecipeBtn = $("#recipe-email-button");
+  const recipeSentElem = $("#collection-recipe-email-sent");
+  const signInElem = $("#collection-recipe-please-sign-in");
+  const signInBtn = $("#collection-recipe-please-sign-in > a");
+  sendRecipeBtn.on("click", async () => {
+    if (!recipes) return;
+    if (!theme.customer_email) {
+      signInElem.show();
+      // TODO Number input and calculate
+      return;
+    }
+    const requestBody = buildRequestBody(recipes);
+    const res = await $.ajax({
+      url: `${window.theme.api_url}/recipe`,
+      type: "POST",
+      data: JSON.stringify(requestBody),
+      dataType: "json"
+    });
+    recipeSentElem.show();
+  });
+
+  signInBtn.on("click", (e) => {
+    e.preventDefault();
+    localStorage.setItem("REDIRECT_URL", location.pathname);
+    location.href = "/account";
+  })
+});
+
+function buildRequestBody(recipes) {
+  const recipeIds = recipes.map(recipe => recipe.mtl_recipe_id).join(",");
+  const itemType = recipes.map(recipe => recipe.arrangement_type).join(",");
+  const numPieces = recipes.map(recipe => recipe.default_number_of_pieces).join(",");
+  const numStems = recipes.map(recipe => recipe.stems).join(",");
+  const totalString = recipes.map(recipe => {
+    const total = recipe.stems * recipe.default_number_of_pieces;
+    return `${total} Stems Total`;
+  }).join(",");
+  const mtlId = recipes.map(recipe => recipe.mtl_id).join(",");
+  const title = "{{ collection.title }}";
+  const email = theme.customer_email;
+  const prodUrl = "https://fiftyflowers.com/collections/{{ collection.handle }}"
+
+  const requestBody = {
+    tableValues: {
+      recipeIds: recipeIds,
+      itemType: itemType,
+      numPieces: numPieces,
+      numStems: numStems,
+      totalString: totalString,
+      mtlId: mtlId,
+      title: title,
+      email: email,
+      prodUrl: prodUrl
+    }
+  };
+  console.log("requestBody", requestBody)
+  return requestBody;
+}
+</script>
+
+
+{% schema %}
+  {
+    "name": "Make this look",
+    "settings": [
+      {
+        "id": "show_collection_description",
+        "type": "checkbox",
+        "label": "Show collection description",
+        "default": true
+      }
+    ]
+  }
+{% endschema %}

@@ -1,0 +1,199 @@
+{% liquid
+  assign brightness_drawer_background = settings.color_text_drawer | color_brightness
+  if brightness_drawer_background > 60
+    assign color_background_button_hover_popup = settings.color_text_drawer | color_darken: 20
+  else
+    assign color_background_button_hover_popup = settings.color_text_drawer | color_lighten: 20
+  endif
+%}
+
+<div class="event-date" data-event-date style="
+    --color-button-background-hover: {{ color_background_button_hover_popup }};
+  ">
+  <div class="event-date__overlay" data-overlay></div>
+  <div class="event-date__bar">
+    <div class="event-date__label">
+      <span>{{ 'event_date.title' | t }}</span>
+    </div>
+    <p class="event-date__description">{{ 'event_date.recommendation' | t }}</p>
+    <div class="pf-element event-date__date-element">
+      <label for="datepicker--event-date" class="pf-label">
+        <span>{{ 'event_date.event_date' | t }}</span>
+      </label>
+      <input placeholder="{{ 'delivery_date.select' | t }}" id="datepicker--event-date" type="text" class="event-date__datepicker pf-input pf-input-datepicker" autocomplete="off"/>
+    </div>
+    <div class="event-date__type pf-element">
+      <label for="event_type" class="pf-label">
+        <span>{{ 'event_date.event_type' | t }}</span>
+      </label>
+      <select name="event_type" class="pf-input" id="event_type">
+        {% render 'event-type-options' %}
+      </select>
+      <div class="pf-icon" data-icon>{% render 'icon' with icon: 'arrow-drop-down' %}</div>
+    </div>
+    <button type="button" id="confirm-event-date" class="btn btn--primary btn--full event-date__button">
+      {{ 'event_date.confirm' | t }}
+    </button>
+  </div>
+</div>
+<div class="header__calendar__notification">
+  <div class="header__calendar__notification__btn">{% render 'icon' with icon: 'close' %}</div>
+  <div class="header__calendar__notification__header">{{ 'event_date.notification_header' | t }}</div>
+  <div class="header__calendar__notification__body">
+    {{ 'event_date.notification_body_1' | t }}
+    <a class="header__calendar__notification__link">{{ 'event_date.notification_body_2' | t }}</a>
+    {{ 'event_date.notification_body_3' | t }}
+  </div>
+</div>
+
+<script>
+  $(function() {
+    // Define as global namespace
+    (function (headerEventDate) {
+      /* ----------------------------- Initial Render ----------------------------- */
+
+      // Render date picker
+      $("#datepicker--event-date").datepicker({
+        minDate: "+1d",
+        maxDate: "+2y",
+        changeMonth: true,
+        changeYear: true,
+      });
+
+      initEvent();
+      $(document).on("pageshow", () => initEvent());
+
+      function initEvent() {
+        // Set the current selected date from local storage
+        const existingEventDate = localStorage.getItem(`event-date-${'{{ customer.id }}'}`);
+        const isNotificationClosed = localStorage.getItem(`notification-closed-${'{{ customer.id }}'}`);
+        if (existingEventDate) renderEventDate(existingEventDate);
+        else if (isNotificationClosed !== "closed") showNotification();
+        else showBadge();
+
+        const existingEventType = localStorage.getItem(`event-type-${'{{ customer.id }}'}`);
+        if (existingEventType) $("#event_type").val(existingEventType);
+      }
+
+      /* --------------------- Attach Event Handlers to Events -------------------- */
+
+      // Open the date picker on icon click
+      $(".header__icon-touch--calendar").click(openEventDate);
+
+      // Open the date picker on notification click
+      $(".header__calendar__notification__link").click(openEventDate);
+
+      // Close notification on button click
+      $(".header__calendar__notification__btn").click(() => {
+        hideNotification();
+        showBadge();
+        localStorage.setItem(`notification-closed-${'{{ customer.id }}'}`, "closed");
+        return false;
+      })
+      
+      // Reset event date when overlay is clicked
+      $(".event-date__overlay").click(() => {
+        const existingEventDate = localStorage.getItem(`event-date-${'{{ customer.id }}'}`);
+        $("#datepicker--event-date").val(existingEventDate);
+        hideEventDate();
+      });
+
+      // Click handler when user confirms the date
+      $("#confirm-event-date").click(() => {
+        const dateText = $("#datepicker--event-date").val();
+        localStorage.setItem(`event-date-${'{{ customer.id }}'}`, dateText);
+
+        const eventType = $("#event_type").val();
+        localStorage.setItem(`event-type-${'{{ customer.id }}'}`, eventType);
+        renderEventDate(dateText);
+        hideEventDate();
+        hideBadge();
+        
+        // reload to reset cart and product page
+        location.reload();
+      });
+
+      // Close modal on escape key
+      $(document).keyup(function(e) {
+        if (e.key === "Escape") { 
+          hideEventDate();  
+        }
+      });
+
+      /* ----------------------------- Event Handlers ----------------------------- */
+
+      // Open event date selector menu
+      function openEventDate() {
+        hideNotification();
+        hideBadge();
+        $(".event-date").addClass("active")
+          .delay(100)
+          .queue(() => $(".event-date").addClass("visible").dequeue());
+        $("body").addClass("overlay-enabled").css({paddingRight: `${getScrollBarWidth()}px`});
+        return false;
+      }
+
+      // Hide the date picker on click
+      function hideEventDate() { 
+        const existingEventDate = localStorage.getItem(`event-date-${'{{ customer.id }}'}`);
+        if (!existingEventDate) showBadge();
+        $(".event-date").removeClass("visible")
+          .delay(200)
+          .queue(() => $(".event-date").removeClass("active").dequeue());
+        $("body").removeClass("overlay-enabled").css({paddingRight: 0});
+      }
+
+      function hideNotification() {
+        $(".header__calendar__notification").removeClass("visible")
+          .delay(200)
+          .queue(() => $(".header__calendar__notification").removeClass("active").dequeue());
+      }
+
+      function showNotification() {
+        $(".header__calendar__notification").addClass("active")
+          .delay(200)
+          .queue(() => $(".header__calendar__notification").addClass("visible").dequeue());
+      }
+
+      function showBadge() {
+        $(".header__calendar__badge").addClass("visible");
+      }
+
+      function hideBadge() {
+        $(".header__calendar__badge").removeClass("visible");
+      }
+      
+      // Render the header date elements with the new date
+      function renderEventDate(dateText) {
+        $("#datepicker--event-date").val(dateText);
+        $(".header__calendar__info").addClass("visible").text($.datepicker.formatDate("m/d/y", new Date(dateText)));
+        hideNotification();
+        hideBadge();
+      }
+      
+      function getScrollBarWidth () {
+        const $outer = $('<div>').css({visibility: 'hidden', width: 100, overflow: 'scroll'}).appendTo('body'),
+            widthWithScroll = $('<div>').css({width: '100%'}).appendTo($outer).outerWidth();
+        $outer.remove();
+        return 100 - widthWithScroll;
+      };
+
+      // Update event date and render it
+      headerEventDate.setHeaderEventDate = function setHeaderEventDate(dateText) {
+        localStorage.setItem(`event-date-${'{{ customer.id }}'}`, dateText);
+
+        $(".header__calendar__info").addClass("visible").text($.datepicker.formatDate("m/d/y", new Date(dateText)));
+        $("#datepicker--event-date").val(dateText);
+
+        hideNotification();
+        hideBadge();
+      }
+
+      // Update event type and render it
+      headerEventDate.setHeaderEventType = function setHeaderEventType(eventType) {
+        localStorage.setItem(`event-type-${'{{ customer.id }}'}`, eventType);
+        $("#event_type").val(eventType);
+      }
+    })((window.headerEventDate = window.headerEventDate || {}));
+  });
+</script>

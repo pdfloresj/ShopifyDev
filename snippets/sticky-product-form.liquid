@@ -1,0 +1,69 @@
+<div class="spf" id="sticky-product-form">
+  <h1 class="spf__product-title ff-heading fs-heading-base c-heading">{{ product.title }}</h1>
+  <div class="spf__product-subtitle">
+    <div class="spf__product-price fs-body-base">
+      <span data-price>{{ current_variant.price | money }}</span>
+      <span class="visually-hidden" data-compare-text>{{ 'products.product.regular_price' | t }}</span>
+      <s data-compare-price>
+        {% if current_variant.compare_at_price > current_variant.price %}
+          {{ current_variant.compare_at_price | money }}
+        {% endif %}
+      </s>
+    </div>
+  </div>
+  <div class="spf__form" id="sticky-product-form-inputs">
+    <div class="spf__form__item spf__form__quantity">
+      <a class="spf__quantity__selector" id="sticky-product-form-decrease" href="#">
+        {% render 'icon' with icon: 'remove' %}
+      </a>
+      <div id="sticky-product-form-quantity"></div>
+      <a class="spf__quantity__selector" id="sticky-product-form-increase" href="#">
+        {% render 'icon' with icon: 'add' %}
+      </a>
+    </div>
+  </div>
+</div>
+
+<script>
+$(function() {
+  $(window).on('resize scroll', function() {
+    const element = $(".product-form__item--submit");
+    const bottom_of_element = element.offset().top + element.outerHeight();
+    const top_of_screen = $(window).scrollTop() + $(".header").outerHeight();
+
+    // If add to cart container is visible in the viewport
+    if ((top_of_screen < bottom_of_element)){
+      hideStickyMenu();
+    } else {
+      displayStickyMenu();
+    }
+  })
+
+  function hideStickyMenu() {
+    $(".spf").removeClass("visible");
+    $("#Quantity-product--static").insertAfter("label[for='Quantity-product--static']");
+    $("#datepicker--static").insertAfter("label[for='datepicker--static']");
+    $("#add-to-cart-button").prependTo(".product-form__item--submit");
+  }
+
+  function displayStickyMenu() {
+    $(".spf").addClass("visible");
+    $("#Quantity-product--static").appendTo("#sticky-product-form-quantity");
+    $("#datepicker--static").appendTo("#sticky-product-form-inputs");
+    $("#add-to-cart-button").appendTo("#sticky-product-form");
+  }
+
+  /* ----------------------------- Event Handlers ----------------------------- */
+  $("#sticky-product-form-increase").click(function(event) {
+    event.preventDefault();
+    const currentVal = parseInt($("#Quantity-product--static").val());
+    $("#Quantity-product--static").val(currentVal + 1);
+  });
+  
+  $("#sticky-product-form-decrease").click(function(event) {
+    event.preventDefault();
+    const currentVal = parseInt($("#Quantity-product--static").val());
+    if (currentVal > 1) $("#Quantity-product--static").val(currentVal - 1);
+  })
+});
+</script>

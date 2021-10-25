@@ -1,0 +1,218 @@
+<div class="collection-sidebar">
+  {% if collection.all_tags.size > 0 and filter_style != 'hidden' %}
+ {% if show_sort %}
+    {%- assign heading = 'collections.sorting.title' | t -%}
+    <div class="collection-sidebar__group" data-group="{{ heading }}">
+      {% render 'collection-sidebar-heading' with heading: heading %}
+      <ul>
+        {% for option in collection.sort_options %}
+          {%- assign is_active = false -%}
+          {%- if option.value == collection.sort_by -%}
+            {%- assign is_active = true -%}
+          {%- endif -%}
+          {% render 'filter-item' with
+            label: option.name,
+            type: 'radio',
+            active: is_active,
+            url: '#',
+            
+            key: 'sort',
+            val: option.value
+          %}
+        {% endfor %}
+      </ul>
+    </div>
+  {% endif %}
+
+    {%- if filter_style == 'by_tag' -%}
+      <div class="collection-sidebar__group" data-group="{{ 'collections.tags.title' | t }}">
+        {%- assign heading = 'collections.tags.title' | t -%}
+        {% render 'collection-sidebar-heading' with heading: heading %}
+        <ul>
+        {% for tag in collection.all_tags %}
+          {% assign is_in_category = false %}
+          {% assign cat = tag | split: '_' | first %}
+          {% unless cat == tag %}
+            {% if categories contains cat %}
+              {% assign is_in_category = true %}
+            {% endif %}
+          {% endunless %}
+
+          {%- capture tag_text -%}
+            {% if is_in_category %}
+              {{ tag | remove_first: cat | remove_first: '_' }}
+            {% else %}
+              {{ tag }}
+            {% endif %}
+          {%- endcapture -%}
+
+          {% if current_tags contains tag %}
+            {% assign is_active = true %}
+            {% assign url = tag_text | link_to_remove_tag: tag | split: '"' %}
+            {% assign url = url[1] %}
+          {% else %}
+            {% assign is_active = false %}
+            {% assign url = tag_text | link_to_add_tag: tag | split: '"' %}
+            {% assign url = url[1] %}
+          {% endif %}
+
+          {% render 'filter-item' with
+            type: 'checkbox',
+            label: tag_text,
+            active: is_active,
+            url: url,
+            
+            key: 'tag',
+            val: tag
+          %}
+        {% endfor %}
+        </ul>
+      </div>
+    {%- endif -%}
+
+
+    {%- if filter_style == 'by_group' -%}
+      {% for category in categories %}
+        {%- assign heading = category -%}
+        <div class="collection-sidebar__group" data-group="{{ heading }}">
+          {% render 'collection-sidebar-heading' with heading: heading %}
+          <ul {% if category == 'Colors' %}style="visibility: hidden;"{% endif %}>
+            {% for tag in collection.all_tags %}
+              {% assign cat = tag | split: '_' | first %}
+
+              {% if cat != tag and category == cat %}
+                {% assign label = tag | remove_first: cat | remove_first: '_' %}
+
+                {% if current_tags contains tag %}
+                  {% assign is_active = true %}
+                  {% assign url = label | link_to_remove_tag: tag | split: '"' %}
+                  {% assign url = url[1] %}
+                {% else %}
+                  {% assign is_active = false %}
+                  {% assign url = label | link_to_add_tag: tag | split: '"' %}
+                  {% assign url = url[1] %}
+                {% endif %}
+
+                {% render 'filter-item' with
+                  type: 'checkbox',
+            	  heading: heading,
+                  label: label,
+                  active: is_active,
+                  url: url,
+
+                  key: 'tag',
+                  val: tag
+                %}
+              {% endif %}
+            {% endfor %}
+          </ul>
+        </div>
+      {% endfor %}
+
+    {%- endif -%}
+  {% endif %}
+
+
+ 
+</div>
+<script>
+$(function() {
+  const HEX_ORDERS = [
+    "ffffff", // White
+    "f9efe3", // Ivory
+    "fcf2d5", // Bleached
+    "e6d5d5", // Dusty Pink
+    "dec5c1", // Dusty Rose
+    "f8d7dd", // Blush Pink
+    "eecccc", // Blush
+    "f7cac9", // Rose Quartz - 2016
+    "fcb0bd", // Light Pink
+    "ef8da5", // True Pink
+    "f67fb9", // Pink
+    "ef3b86", // Hot Pink
+    "e299bd", // Pinky Lavender
+    "b784a7", // Mauve
+    "b73275", // Berry Pink
+    "b73275", // Magenta
+    "872156", // Purpleberry
+    "872156", // Fuchsia
+    "812b2a", // Marsala
+    "812b2a", // Wine Red
+    "8c0205", // Cranberry
+    "d41b37", // True Red
+    "d21632", // Red
+    "ac3e2a", // Terracotta
+    "af4a01", // Rust
+    "ff6f61", // Coral - 2019
+    "ff6f61", // Coral
+    "f16147", // Sunset
+    "fa9a85", // Peach
+    "d73c26", // Dark Orange
+    "ff7914", // Orange
+    "ff7913", // True Orange
+    "e1ad01", // Mustard Yellow
+    "efc700", // Dark Yellow
+    "ffe242", // Yellow
+    "ffe242", // True Yellow
+    "ffe7a8", // Pale Yellow
+    "abd12e", // Lime Green
+    "abd12f", // Chartreuse
+    "a1c990", // Light Green
+    "a2b18d", // Sage Green
+    "0f8e25", // True Green
+    "0f8c24", // Green
+    "37503d", // Forest Green
+    "019875", // Emerald Green
+    "21b9c6", // Turquoise
+    "21b9c6", // Teal
+    "a2d9f9", // Soft Blue
+    "230bc1", // Blue
+    "230bc1", // True Blue
+    "a1d8f8", // Light Blue
+    "8ea6d0", // Serenity - 2016
+    "c5a9d6", // Lavender
+    "8c3ab8", // True Purple
+    "8b3bb7", // Purple
+    "612880", // Dark Purple
+    "5d1017", // Burgundy
+    "999999", // Gray
+    "000000", // Black
+    "6e493a", // Brown
+    "cd7f32", // Bronze
+    "efcf97", // Champagne
+    "927210", // Gold
+    "a8b2b4", // Silver
+    "ca5b2b", // Copper
+    "b2f252", // Rainbow
+    "abfa53", // Multicolor
+    "ff1195", // Farm Mixes
+    "00ffff", // Choose Your Colors
+  ]  
+
+  const ul = $('[data-group="Colors"] ul'); 
+  const mobileUl = $('[data-mobile-modal="Colors"] ul');
+
+  sortColor(ul);
+  sortColor(mobileUl);
+
+  /** Sort color filter list */
+  function sortColor(parentElem) {
+    const children = parentElem.children("li");
+    children.detach().sort(function(a,b) {
+      const hexA = $(a).find(".filter-item__flower-color").data("hex");
+      const hexB = $(b).find(".filter-item__flower-color").data("hex");
+
+      if (!hexA || !hexB) return -1;
+
+      const orderA = HEX_ORDERS.indexOf(hexA.toString());
+      const orderB = HEX_ORDERS.indexOf(hexB.toString());
+
+      return orderA - orderB;
+    });
+
+    /* Reattach the now sorted children to the ul container */
+    parentElem.append(children);
+    parentElem.css("visibility", "visible");
+  } 
+});
+</script>

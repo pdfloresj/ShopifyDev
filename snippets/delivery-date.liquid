@@ -1,0 +1,29 @@
+{% if form_type == 'quick' %}
+<div class="pf-container pf-container--datepicker" id="datepicker-container--{{ form_type }}">
+  <div class="pf-element">
+    <label class="pf-label" for="datepicker--{{ form_type }}">
+      <span>{{ 'products.product.delivery_date' | t }}</span>
+    </label>
+    {% render 'icon' with icon: 'custom-calendar', class: 'pf-input-datepicker-icon' %}
+    <input disabled placeholder="{{ 'delivery_date.loading' | t }}" id="datepicker--{{ form_type }}" type="text" class="pf-input pf-input-datepicker pf-input-datepicker--product disabled"/>
+    <div id="datepicker-msg--{{ form_type }}" class="pf-input-datepicker-msg"></div>
+  </div>
+</div> 
+{% else %}
+<div class="pf-container--datepicker--static" id="datepicker-container--{{ form_type }}">
+    {% render 'icon' with icon: 'custom-calendar', class: 'pf-input-datepicker-icon--static' %}
+    <div class="pf-element--static">
+      <div class="pf-label--static">
+        <span>{{ 'products.product.choose_delivery_date' | t }}</span>
+      </div>
+      <label class="pf-label-background" for="datepicker--{{ form_type }}"></label>
+      <input disabled placeholder="{{ 'delivery_date.loading' | t }}" id="datepicker--{{ form_type }}" type="text" class="pf-input-datepicker pf-input-datepicker--static disabled"/>
+    </div>
+</div> 
+<div id="datepicker-msg--{{ form_type }}" class="pf-input-datepicker-msg"></div>
+<div class="pf-input-datepicker-msg datepicker__msg visible">
+  <span class="datepicker__msg-content">{{ 'delivery_date.48_hour_title' | t }}</span>
+  <span class="datepicker__msg-icon"><i>i</i><div class="datepicker__msg-tooltip">{{ 'delivery_date.48_hour_description' | t }}</div></span>
+</div>
+{% endif %}
+ 

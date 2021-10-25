@@ -1,0 +1,43 @@
+<div class="cart-date">
+  <div class="cart-date__bar">
+    <label class="cart-date__label">
+      <span>{{ 'cart.general.event_date' | t }}</span>
+    </label>
+    <input placeholder="{{ 'delivery_date.select' | t }}" name="attributes[event_date]" id="datepicker--cart-date" type="text" class="cart-date__datepicker pf-input pf-input-datepicker pf-input__event"/>
+  </div>
+  <div class="cart-date__bar">
+    <label class="cart-date__label">
+      <span>{{ 'cart.general.event_type' | t }}</span>
+    </label>
+    <select name="attributes[event_type]" class="pf-input pf-input__event" id="event_type--cart">
+      {% render 'event-type-options' %}
+    </select>
+    <div class="pf-icon" data-icon>{% render 'icon' with icon: 'arrow-drop-down' %}</div>
+  </div>
+</div>
+
+<script>
+  $(function() {
+    // Set the current selected date from local storage
+    const existingEventDate = localStorage.getItem(`event-date-${'{{ customer.id }}'}`);
+    if (existingEventDate) $("#datepicker--cart-date").val(existingEventDate);
+
+    // Set the current selected event type from local storage
+    const existingEventType = localStorage.getItem(`event-type-${'{{ customer.id }}'}`);
+    if (existingEventType) $("#event_type--cart").val(existingEventType);
+
+    // Handle event type change
+    $("#event_type--cart").change(function() {
+      headerEventDate.setHeaderEventType($(this).val());
+    });
+
+    // Render date picker
+    $("#datepicker--cart-date").datepicker({
+      minDate: "+1d",
+      maxDate: "+2y",
+      changeMonth: true,
+      changeYear: true,
+      onSelect: headerEventDate.setHeaderEventDate
+    }); 
+  });
+</script>

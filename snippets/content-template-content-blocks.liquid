@@ -1,0 +1,21 @@
+<section class="Section Section--spacingNormal" data-section-id="{{ section.id | append: '-' | append: block.id }}" data-section-type="dynamic-content-blocks">
+  <div class="Container Content-Blocks">
+    {% include 'content-blocks-header', title: block.settings.title, title_link: block.settings.title_link %}
+
+    <div class="Content-Blocks__Wrapper">
+      {%- for i in (1..4) -%}
+        {% assign block_img_index = 'block_'  | append: i | append: '_img' %}
+        {% assign block_title_index = 'block_'  | append: i | append: '_title' %}
+        {% assign block_url_index = 'block_'  | append: i | append: '_url' %}
+        
+        {% assign block_img = block.settings[block_img_index] %}
+        {% assign block_title = block.settings[block_title_index] %}
+        {% assign block_url = block.settings[block_url_index] %}
+        
+        {% if block_title != blank or block_img != blank or block_url != blank %}
+          {% include 'content-blocks-block', block_img: block_img, block_title: block_title, block_url: block_url %}
+        {% endif %}
+      {%- endfor -%}
+    </div>
+  </div>
+</section>

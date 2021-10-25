@@ -1,0 +1,42 @@
+<section class="Section Section--spacingNormal" data-section-id="{{ section.id | append: '-' | append: block.id }}" data-section-type="shop-the-look">
+  <div class="ShopTheLookWrapper">
+    <div class="Container">
+      {% include 'shop-the-look-header', title: block.settings.title %}
+    
+      <div class="ShopTheLook Carousel" data-flickity-config='{{ flickity_options }}'>
+        {%- for i in (1..4) -%}
+          {% assign is_enabled = 'enable_look_' | append: i %}
+
+          {% if block.settings[is_enabled] %}
+            {% assign block_index = 'block_'  | append: i | append: '_' %}
+            {% assign block_img_index = block_index | append: 'image' %}
+            {% assign block_product_1_index = block_index | append: 'product_1' %}
+            {% assign block_product_2_index = block_index | append: 'product_2' %}
+            {% assign block_product_3_index = block_index | append: 'product_3' %}
+
+            {% assign block_img = block.settings[block_img_index] %}
+            {% assign block_product_1 = block.settings[block_product_1_index] %}
+            {% assign block_product_2 = block.settings[block_product_2_index] %}
+            {% assign block_product_3 = block.settings[block_product_3_index] %}
+
+            {%- if block_img == blank and block_product_1 == blank and block_product_2 == blank and block_product_3 == blank -%}
+              {%- assign show_on_boarding = true -%}
+            {%- else -%}
+              {%- assign show_on_boarding = false -%}
+            {%- endif -%}
+
+            {% assign block_id = 'block_' | append: i | append: '-' | append: block.id %}
+
+            {% include 'shop-the-look-carousel-inner', block_index: block_index, block_id: block_id, show_on_boarding: show_on_boarding %}
+          {% endif %}
+        {%- endfor -%}
+      </div>
+
+      <div class="ShopTheLook__DiscoverButtonWrapper hidden-tablet-and-up">
+        <button class="ShopTheLook__ViewButton" aria-haspopup="true" aria-expanded="false" aria-controls="block-{{ section.blocks.first.id }}-popover" data-action="open-look">
+          {{- 'home_page.shop_the_look.view_products' | t -}}
+        </button>
+      </div>
+    </div>
+  </div>
+</section>

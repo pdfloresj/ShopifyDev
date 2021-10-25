@@ -1,0 +1,87 @@
+
+<div class="collection__image__main">
+  <div><div class="collection__image__item collection__image__placeholder"></div></div>
+</div>
+<div class="collection__image__thumbnail">
+  <div><div class="collection__image__item collection__image__placeholder"></div></div>
+  <div><div class="collection__image__item collection__image__placeholder"></div></div>
+  <div><div class="collection__image__item collection__image__placeholder"></div></div>
+  <div><div class="collection__image__item collection__image__placeholder"></div></div>
+  <div><div class="collection__image__item collection__image__placeholder"></div></div>
+</div>
+<script>
+$(function() {
+  const renderImages = async () => {
+    $(".collection__image__main").slick({
+      slidesToShow: 1,
+      slidesToScroll: 1,
+      arrows: false,
+      fade: true,
+      asNavFor: '.collection__image__thumbnail',
+    }).on('setPosition', makeImageSquare);
+
+    $(".collection__image__thumbnail").slick({
+      slidesToShow: 3,
+      asNavFor: '.collection__image__main',
+      focusOnSelect: true,
+      arrows: true,
+      accessibility: false,
+      draggable: false,
+      centerMode: true,
+      centerPadding: "20px",
+      prevArrow: `<div class="collection__image-prev collection__image-arrow {% if collection.template_suffix == 'wedding-stories' %}collection__ws-image-arrow{% endif %}">{% render "icon" with icon: "arrow_prev" %}</div>`,
+      nextArrow: `<div class="collection__image-next collection__image-arrow {% if collection.template_suffix == 'wedding-stories' %}collection__ws-image-arrow{% endif %}">{% render "icon" with icon: "arrow_next" %}</div>`,
+      responsive: [
+        {
+          breakpoint: 960,
+          settings: {
+            slidesToShow: 5
+          }
+        },
+        {
+          breakpoint: 640,
+          settings: {
+            slidesToShow: 3,
+          }
+        }
+      ]
+    }).on('setPosition', makeImageSquare);
+
+
+    let images = [];
+    const query = encodeURIComponent("{{ collection.title }}");
+    const isWeddingStory = "{{ collection.template_suffix }}" === "wedding-stories"
+    if (isWeddingStory) {
+      const imagesResult = await $.get(`${window.theme.api_url}/wedding-stories/images?ws_name=${query}`, null, null, "json");
+      images = imagesResult.map(images => ({
+        "square_crop": `https://site-files.fiftyflowers.com/FiftyFlowers/Image/Testimonials/${images.testimonial_large_image}`,
+        "thumbnail": `https://site-files.fiftyflowers.com/FiftyFlowers/Image/Testimonials/${images.testimonial_large_image}`
+      }));
+    } else {
+      const imagesResult = await $.get(`${window.theme.api_url}/make-this-look/images?mtl_name=${query}`, null, null, "json");
+      images = imagesResult.map(images => ({
+        ...images, 
+        "square_crop": `https://site-files.fiftyflowers.com/FiftyFlowers/Image/MakeThisLook/square/${images.square_crop}`,
+        "thumbnail": `https://site-files.fiftyflowers.com/FiftyFlowers/Image/MakeThisLook/thumbnails/${images.thumbnail}`
+      }));
+    }  
+
+    // Remove placeholder elements
+    $(".collection__image__main").slick('slickRemove', null, null, true);
+    $(".collection__image__thumbnail").slick('slickRemove', null, null, true);
+
+    images.forEach(imageObj => {
+      $(".collection__image__main").slick('slickAdd', `<div><img class="collection__image__item ${isWeddingStory ? "img-contain" : ""} lazyload" data-src="${imageObj.square_crop}"/></div>`);
+      $(".collection__image__thumbnail").slick('slickAdd', `<div><img class="collection__image__item ${isWeddingStory ? "img-contain" : ""} lazyload" data-src="${imageObj.thumbnail}"/></div>`);
+    });
+  }
+
+  function makeImageSquare(event, slick) {
+    slick.$slideTrack
+      .find('.slick-slide > .collection__image__item')
+      .css('height', slick.$slides[0] ? `${slick.$slides[0].scrollWidth}px` : 0);
+  }
+  
+  renderImages();
+})
+</script>

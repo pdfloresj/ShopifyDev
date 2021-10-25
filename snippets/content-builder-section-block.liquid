@@ -1,0 +1,37 @@
+{% comment %}
+  Snippet used for the scalability and maintainability of sections 
+  like the 'content-builder-section' which rely on an ever evolving 
+  list of block types. 
+
+  Fun fact: you don't actually have to iterate through blocks when
+  passing them to snippets. If you use a block in a snippet without
+  passing a reference or anything, the section will understand to 
+  loop through its blocks. Not sure if this is kosher. There's no
+  obvious documentation for this. Might not work when we start fully
+  supporting the "render" tag.
+{% endcomment %}
+
+{% case block.type %}
+  {% when 'hero' %}
+    {% include 'content-template-hero' %}
+  {% when 'banner' %}
+    {% include 'content-template-banner' %}
+  {% when 'steps-header' %}
+    {% include 'content-template-steps-header' %}
+  {% when 'steps' %}
+    {% include 'content-template-steps' %}
+  {% when 'featured-looks' %}
+    {% include 'content-template-featured-look' %}
+  {% when 'tabbed-content' %}
+    {% include 'content-template-tabbed-content' %}
+  {% when 'column-blocks' %}
+    {% include 'content-template-column-blocks' %}
+  {% when 'code' %}
+    {% include 'content-template-code' %}
+  {% when 'content-blocks' %}
+    {% include 'content-template-content-blocks' %}
+  {% when 'shop-the-look' %}
+    {% include 'content-template-shop-the-look' %}
+  {% when 'featured-collections' %}
+    {% include 'content-template-featured-collections' %}
+{% endcase %}

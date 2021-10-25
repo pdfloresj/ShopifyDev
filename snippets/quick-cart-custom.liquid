@@ -1,0 +1,318 @@
+{% liquid
+  assign brightness_drawer_background = settings.color_text_drawer | color_brightness
+  if brightness_drawer_background > 60
+    assign color_background_button_hover_popup = settings.color_text_drawer | color_darken: 20
+  else
+    assign color_background_button_hover_popup = settings.color_text_drawer | color_lighten: 20
+  endif
+%}
+
+<div
+  class="quick-cart"
+  data-quick-cart
+  style="
+    --color-button-background-hover: {{ color_background_button_hover_popup }};
+  "
+>
+  <div class="quick-cart__overlay" data-overlay></div>
+
+  <div class="quick-cart__container">
+    <div class="quick-cart__cart visible" data-cart data-scroll-lock-ignore>
+      <div class="quick-cart__header">
+        {{ 'quick_cart.cart' | t }}
+        <a href="{{ routes.cart_url }}" class="btn btn--primary quick-cart__header__btn">{{ 'quick_cart.go_to_cart' | t }}</a>
+      </div>
+      
+       <div id="reminder-message">
+      	<span>Uh Oh! You're Missing A Flower Kit!</span>
+        <p>Make sure you include your flower kit in your purchase.</p>
+        <button class="cart__floralkitselectbtn" id="selectAFloralKitBtn-QCart">Select A Kit</button>
+        <!-- The Modal -->
+        <div id="flowerKitModal" class="flowerkit-modal">
+          <!-- Modal content -->
+          <div class="flower-kit-modal-content">
+            <span class="close">&times;</span>
+            <div class="qc--floral-kit-options">
+              <div class="qc--floral-kit-option">
+                <img src="//cdn.shopify.com/s/files/1/0516/8968/5154/products/Chrysal-Flower-Care-Kit-350_87c595ce_900x.jpg?v=1614718354" alt="" />
+                <div class="floral-kit-option--content">
+                  <h3>Chrysal Floral Care Kit</h3>
+                  <input type="button" class="qc--add-kit-to-cart-btn" value="Add to Cart" onClick="addKitToCart(39854528725154, 1, 6912)">
+                  {% comment %} TODO: addKitToCart {% endcomment %}
+                </div>
+              </div>
+              <hr class="qc--floral-kit-hr" />
+              <div class="qc--floral-kit-option">
+                <img src="//cdn.shopify.com/s/files/1/0516/8968/5154/products/basic-floral-care-kit-flat-lay-350_4cd3c47f_900x.jpg?v=1614718657" alt="" />
+                <div class="floral-kit-option--content">
+                  <h3>Basic Floral Supply Kit</h3>
+                  <input type="button" class="qc--add-kit-to-cart-btn" value="Add to Cart" onClick="addKitToCart(39854536327330, 1, 7525)">
+                </div>
+              </div>
+              <hr class="qc--floral-kit-hr" />
+              <div class="qc--floral-kit-option">
+                <img src="//cdn.shopify.com/s/files/1/0516/8968/5154/products/everything-floral-tool-kit-flat-lay-350_a93b728c_900x.jpg?v=1614719909" alt="" />
+                <div class="floral-kit-option--content">
+                  <h3>Deluxe DIY Flower Design Tool Kit</h3>
+                  <input type="button" class="qc--add-kit-to-cart-btn" value="Add to Cart" onClick="addKitToCart(39854578761890, 1, 9589)">
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <div class="quick-cart__items" id="quick-cart__items" data-items-custom></div>
+      <div class="quick_cart__empty ff-body fs-body-base" data-empty>{{ 'quick_cart.empty' | t }}</div>
+      <div class="quick-cart__footer ff-body fs-body-base ta-c" data-footer>
+        <div class="quick-cart__discounts c-subdued" data-discounts></div>
+        <p>{{ settings.quick_cart_note | replace: "[subtotal]", "<span data-subtotal>$-.--</span>" }}</p>
+        <a href="{{ routes.cart_url }}" class="btn btn--primary btn--full">{{ 'quick_cart.go_to_cart' | t }}</a>
+      </div>
+    </div>
+
+    <div class="quick-cart__configure" data-configure>
+      <div class="quick-add loading" data-scroll-lock-ignore data-add>
+        <div class="quick-add__configure" data-contents></div>
+        <div class="quick-add__loading-wrap">
+          <div class="quick-add__loading-bar"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<script>
+  $(function() {
+    const loadQuickCart = async () => {
+      const {
+        items: cartItems,
+        item_count: cartItemCount,
+        items_subtotal_price: subtotal,
+      } = await cartService.getCartInfo();    
+      quickCart.updateCart({
+        subtotal: subtotal,
+        items: cartItems,
+        itemCount: cartItemCount,
+        updateHeader: false
+      });
+    }
+    loadQuickCart();
+  });
+</script>
+<script>
+  
+   
+  
+  /* Listen to click event on the dynamically added "add to cart" button 
+    inside the quick cart */
+  $('.quick-add__configure').on('click', '#add-to-cart-button-quick', async () => {
+    const deliveryDate = $('#datepicker--quick').val();
+    const handle = $('.quick-add .product-form').data("product-handle");
+    if (!deliveryDateUtil.validateDateStr(deliveryDate, handle)) {
+      showQuickDeliveryDateError();
+      return;
+    } else {
+      hideQuickDeliveryDateError();
+    }
+    
+    const variantId = await getVariantIdFromQuickAddMenu();
+    startQuickAddCartLoading();
+    await cartService.addItemToCart(variantId, 1, deliveryDate, handle);
+    
+    const {
+      items: cartItems,
+      item_count: cartItemCount,
+      items_subtotal_price: subtotal,
+    } = await cartService.getCartInfo();
+
+    quickCart.updateCart({
+      subtotal: subtotal,
+      items: cartItems,
+      itemCount: cartItemCount,
+    });
+
+    showQuickCartAndHideAddMenu();
+  });
+
+  const showQuickDeliveryDateError = () => {
+    $('#datepicker-msg--quick').addClass("visible").text("{{ 'delivery_date.invalid_delivery_date' | t }}");
+    $('#datepicker-container--quick label').addClass("error");
+  }
+
+  const hideQuickDeliveryDateError = () => {
+    $('#datepicker-msg--quick').removeClass("visible"); 
+    $('#datepicker-container--quick label').removeClass("error");
+  }
+
+  const startQuickAddCartLoading = () => $('#add-to-cart-button-quick').addClass("loading");
+  const showQuickCartAndHideAddMenu = () => {
+    $('.quick-cart__configure').removeClass('visible');
+    $('.quick-cart__cart').addClass('visible'); 
+  }
+
+  const getVariantIdFromQuickAddMenu = async () => {
+    const handle = $('.quick-add .product-form').data("product-handle");
+    const product =  await $.get(`/products/${handle}.js`, null, null, "json");
+    const selectedIndex = $('.quick-add #Option1').prop('selectedIndex');
+    const variantId = product.variants[selectedIndex].id;
+    return variantId;
+  }
+</script>
+<script>
+  /**
+  * Dynamically load date picker
+  */
+  setInterval(function() {
+    if ($('#datepicker--quick').length && $('.ui-datepicker:visible').length === 0) {
+      const handle = $('.quick-add .product-form').data("product-handle");
+      deliveryDateUtil.datepicker("#datepicker--quick", handle, {
+        loadingMsg: "{{'delivery_date.loading' | t}}",
+        selectMsg: "{{'delivery_date.select' | t}}"
+      },
+      "{{ customer.id }}");
+    } 
+  }, 500);
+</script>
+<script>
+  /* ------ Event handlers ----- */
+  
+  var itemWithSaturdayExists = false;
+  var saturdayDeliveryProduct = false;
+  
+  const increaseQuantity = async (id, quantity) => {
+    let quantityOfSaturdaySurcharge = null;
+    
+    const {
+      items: cartItems,
+      item_count: cartItemCount,
+      items_subtotal_price: subtotal,
+    } = await cartService.updateLineItemQuantity(id, quantity + 1);
+      
+      cartItems.forEach(cartItem => {
+      var deliveryDate = cartItem.properties['Delivery Date'];
+      var formattedDate = new Date(deliveryDate);
+      var deliveryDay = formattedDate.getDay();
+
+      if(deliveryDay === 6 && cartItem.variant_id !== 39557608407202) {
+      	quantityOfSaturdaySurcharge += cartItem.quantity;
+        itemWithSaturdayExists = true;
+      }
+
+      if(cartItem.variant_id === 39557608407202) {
+        saturdayDeliveryProduct = true;
+      }
+    });
+
+    quickCart.updateCart({
+      subtotal: subtotal,
+      items: cartItems,
+      itemCount: cartItemCount,
+    });
+      
+      if(itemWithSaturdayExists && saturdayDeliveryProduct && id !== 39557608407202) {
+      increaseQuantity(39557608407202, quantityOfSaturdaySurcharge - 1);
+      itemWithSaturdayExists = false;
+      saturdayDeliveryProduct = false;
+    }
+  };
+
+  const decreaseQuantity = async (id, quantity) => {
+    let quantityOfSaturdaySurcharge = null;
+      
+    const {
+      items: cartItems,
+      item_count: cartItemCount,
+      items_subtotal_price: subtotal,
+    } = await cartService.updateLineItemQuantity(id, quantity - 1);
+      
+      cartItems.forEach(cartItem => {
+      var deliveryDate = cartItem.properties['Delivery Date'];
+      var formattedDate = new Date(deliveryDate);
+      var deliveryDay = formattedDate.getDay();
+
+      if(deliveryDay === 6 && cartItem.variant_id !== 39557608407202) {
+      	quantityOfSaturdaySurcharge += cartItem.quantity;
+        itemWithSaturdayExists = true;
+      }
+
+      if(cartItem.variant_id === 39557608407202) {
+        saturdayDeliveryProduct = true;
+      }
+    });
+
+    quickCart.updateCart({
+      subtotal: subtotal,
+      items: cartItems,
+      itemCount: cartItemCount,
+    });
+      
+      if(itemWithSaturdayExists && saturdayDeliveryProduct && id !== 39557608407202) {
+      decreaseQuantity(39557608407202, quantityOfSaturdaySurcharge + 1);
+      itemWithSaturdayExists = false;
+      saturdayDeliveryProduct = false;
+    }
+  };
+</script>
+<script>  
+// Add Flower Kit to Cart
+const addKitToCart = async (variant_id, qty, handle) => { 
+
+  const eventDateExists = localStorage.getItem(`event-date-${'{{ customer.id }}'}`);
+  if (eventDateExists) {
+    var deliveryDate = eventDateExists;
+
+    await cartService.addItemToCart(variant_id, 1, deliveryDate, handle);
+
+    const {
+      items: cartItems,
+      item_count: cartItemCount,
+      items_subtotal_price: subtotal,
+    } = await cartService.getCartInfo();
+
+    quickCart.updateCart({
+      subtotal: subtotal,
+      items: cartItems,
+      itemCount: cartItemCount,
+    });
+  } else {
+    if(handle == 6912) {
+      window.location.href = '/products/6912';
+    } else if(handle == 7525) {
+      window.location.href = '/products/7525';
+    } else if(handle == 9589){
+      window.location.href = '/products/9589';
+    }
+  }
+
+}
+</script>
+<script>
+
+// Get the modal
+var modal = document.getElementById("flowerKitModal");
+
+// Get the button that opens the modal
+var btn = document.getElementById("selectAFloralKitBtn-QCart");
+
+// Get the <span> element that closes the modal
+var span = document.getElementsByClassName("close")[0];
+
+// When the user clicks the button, open the modal 
+btn.onclick = function() {
+  modal.style.display = "block";
+}
+
+// When the user clicks on <span> (x), close the modal
+span.onclick = function() {
+  modal.style.display = "none";
+}
+
+// When the user clicks anywhere outside of the modal, close it
+
+  window.onclick = function(event) {
+  if (event.target == modal) {
+    modal.style.display = "none";
+  }
+}
+
+</script>

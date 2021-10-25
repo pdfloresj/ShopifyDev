@@ -1,0 +1,526 @@
+{% capture eventState %}
+    <option value="AL">Alabama</option>
+    <option value="AK">Alaska</option>
+    <option value="AZ">Arizona</option>
+    <option value="AR">Arkansas</option>
+    <option value="CA">California</option>
+    <option value="CO">Colorado</option>
+    <option value="CT">Conneticut</option>
+    <option value="DE">Delaware</option>
+    <option value="DC">District of Columbia</option>
+    <option value="FL">Florida</option>
+    <option value="GA">Georgia</option>
+    <option value="HI">Hawaii</option>
+    <option value="ID">Idaho</option>
+    <option value="IL">Illinois</option>
+    <option value="ID">Indiana</option>
+    <option value="IA">Iowa</option>
+    <option value="KS">Kansas</option>
+    <option value="KY">Kentucky</option>
+    <option value="LA">Louisiana</option>
+    <option value="ME">Maine</option>
+    <option value="MD">Maryland</option>
+    <option value="MA">Massachusetts</option>
+    <option value="MI">Michigan</option>
+    <option value="MN">Minnesota</option>
+    <option value="MS">Mississippi</option>
+    <option value="MO">Missouri</option>
+    <option value="MT">Montana</option>
+    <option value="NE">Nebraska</option>
+    <option value="NV">Nevada</option>
+    <option value="NH">New Hampshire</option>
+    <option value="NJ">New Jersey</option>
+    <option value="NM">New Mexico</option>
+    <option value="NY">New York</option>
+    <option value="NC">North Carolina</option>
+    <option value="ND">North Dakota</option>
+    <option value="OH">Ohio</option>
+    <option value="OK">Oklahoma</option>
+    <option value="OR">Oregon</option>
+    <option value="PA">Pennsylvania</option>
+    <option value="RI">Rhode Island</option>
+    <option value="SC">South Carolina</option>
+    <option value="SD">South Dakota</option>
+    <option value="TN">Tennessee</option>
+    <option value="TX">Texas</option>
+    <option value="UT">Utah</option>
+    <option value="VT">Vermont</option>
+    <option value="VA">Virginia</option>
+    <option value="WA">Washington</option>
+    <option value="WV">West Virginia</option>
+    <option value="WI">Wisconsin</option>
+    <option value="WY">Wyoming</option>
+    <option value="AB">Alberta</option>
+    <option value="BC">British columbia</option>
+    <option value="MB">Manitoba</option>
+    <option value="NB">New Brunswick</option>
+    <option value="NL">Newfoundland and Labrador</option>
+    <option value="NS">Nova Scotia</option>
+    <option value="NT">Northwest Territories</option>
+    <option value="NU">Nunavut</option>
+    <option value="ON">Ontario</option>
+    <option value="PE">Prince Edward Island</option>
+    <option value="QC">Quebec</option>
+    <option value="SK">Saskatchewan</option>
+    <option value="YT">Yukon</option>
+{% endcapture%}
+
+{% capture eventCountry %}
+    <option value="USA">USA</option>
+    <option value="Canada">Canada</option>
+{% endcapture %}
+
+{% capture customerType %}
+    <option value="bride">Bride</option>
+    <option value="groom">Groom</option>
+    <option value="mom">Mom</option>
+    <option value="father">Father</option>
+    <option value="sibling">Sibling</option>
+    <option value="friend">Friend</option>
+    <option value="florist">Florist</option>
+    <option value="photographer">Photographer</option>
+    <option value="other">Other</option>
+{% endcapture%}
+{% capture flowerMaker %}
+    <option value="me">Me</option>
+    <option value="groom">Groom</option>
+    <option value="mom">Mom</option>
+    <option value="father">Father</option>
+    <option value="sibling">Sibling</option>
+    <option value="friend">Friend</option>
+    <option value="florist">Florist</option>
+    <option value="pro">PRO</option>
+    <option value="other">Other</option>
+{% endcapture%}
+
+<main class="win-your-wedding-flowers-entry">
+<h1>Tell Your Story!</h1>
+<hr class="wywf-entry--hr" />
+<section id="entry-event" class="entry--sections">
+    <form>
+        <div id="entry-event--info-pulled">
+            <h2 id="entry--customerName"></h2>
+            <div id="info-pulled--details">
+                <p id="entry--deliveryDate"><span>Delivery Date: </span></p>
+                <p id="entry--orderNumber"><span>Order Number: </span></p>
+            </div>
+        </div>
+        <fieldset id="entry-event--info">
+            <label for="wywf-event--city" class="required">Event City:</label>
+            <input type="text" id="wywf-event--city" placeholder="City" required />
+            <label for="wywf-event--state" class="required">Event State:</label>
+            <select id="wywf-event--state" placeholder="State" required>
+                {{ eventState }}
+            </select>
+            <label for="wywf-event--country" class="required">Event Country:</label>
+            <select id="wywf-event--country" placeholder="Country" required>
+                {{ eventCountry }}
+            </select>
+            <label for="wywf-event--venue">Event Venue:</label>
+            <input type="text" id="wywf-event--venue" placeholder="Venue Name" />
+            <label for="wywf-event--planner">Event Planner:</label>
+            <input type="text" id="wywf-event--planner" placeholder="Planner Name" />
+            <!-- <label for="wywf-event--customerType">I Am The:</label>
+            <select id="wywf-event--customerType">
+                {{customerType}}
+            </select>
+            <label for="wywf-event--flowerMaker">I Am The:</label>
+            <select id="wywf-event--flowerMaker">
+                {{flowerMaker}}
+            </select>
+            <label for="wywf-event--flowerMaker-Name">Name of Person Who Made Flowers:</label>
+            <input type="text" id="wywf-event--flowerMaker-Name" placeholder="Enter Name Here" /> -->
+        </fieldset>
+        <hr class="wywf-entry--hr" />
+        <fieldset id="entry-event--flowers">
+            <h2>List of Flowers Ordered</h2>
+            <div class="ee--flowers-list">
+            </div>
+        </fieldset>
+        <hr class="wywf-entry--hr" />
+        <fieldset id="entry-event--photos">
+            <h2>Share Photos</h2>
+            <p>You can upload any number of photos of your wedding and wedding flowers. We recommend at least 5 images. Bonus for bouquet shots!</p>
+            <div id="entry-event--img-container">
+              <div class="entry-event--images" id="uploaded-images-preview"></div>
+              <input 
+                type="file"
+                multiple
+                accept="image/x-png,image/jpeg"
+                id="image-upload"
+                required
+              />
+            </div>
+            <div class="entry-event--message">*Maximum file size is 5MB</div>
+            <label for="event--photographer">Who Was Your Photographer:</label>
+            <input type="text" id="event--photographer" placeholder="Photographer Name" />
+        </fieldset>
+        <hr class="wywf-entry--hr" />
+        <fieldset id="entry-event--story">
+            <h2>Tell Your Story</h2>
+            <label for="event--story-title" class="required">Title:</label>
+            <input type="text" id="event--story-title" placeholder="Title Of Your Story" required/>
+            <label for="event--story-content" class="required">Tell Your Story:</label>
+            <textarea id="event--story-content" rows="5" cols="28" placeholder="Tell Your Story Here" required></textarea>
+        </fieldset>
+        <hr class="wywf-entry--hr" />
+        <fieldset id="entry-event--vendors">
+            <h2>Vendor Team</h2>
+            <label for="wywf-event--caterer">Caterer:</label>
+            <input type="text" id="wywf-event--caterer" placeholder="Caterer Name" />
+            <label for="wywf-event--dress">Dress Shop Or Designer:</label>
+            <input type="text" id="wywf-event--dress" placeholder="Dress Shop Or Designer Name" />
+            <label for="wywf-event--groom-attire">Grooms Attire:</label>
+            <input type="text" id="wywf-event--groom-attire" placeholder="Grooms Attire Provider Name" />
+            <label for="wywf-event--dj">DJ Or Band:</label>
+            <input type="text" id="wywf-event--dj" placeholder="DJ or Band Name" />
+        </fieldset>
+        <div id="wywf-entry--errormsg">
+            <p>Please fill out all of the required fields highlighted in red.</p>
+        </div>
+        <div class="progress-bar" id="wywf-entry--loadingbar" style="display:none;">
+          <div class="progress-bar-progress"></div>
+        </div>
+        <button type="submit" name="add" id="wywf-submit-btn" aria-label="Submit" class="btn btn--full">
+          <span data-add-to-cart-text="">
+            Submit
+          </span>
+          <div class="btn__loading-wrap">
+            <div class="btn__loading-bar"></div>
+          </div>
+        </button>
+    </form>
+</section>
+</main>
+
+<script>
+$(function () {
+  class LoadingProgressBar {
+    constructor() {
+      this._current = 0;
+      this._total = 0;
+    }
+
+    get total() {
+      return this._total;
+    }
+
+    set total(val) {
+      this._total = val;
+      renderProgressbar();
+    }
+
+    get current() {
+      return this._current;
+    }
+
+    set current(val) {
+      this._current = val;
+      renderProgressbar();
+    }
+
+    clear() {
+      this._current = 0;
+      this._total = 0;
+      renderProgressbar();
+    }
+  }
+
+  const imageUploadInput = $("#image-upload");
+  const requiredInputs = $("[required]");
+  const submitBtn = $("#wywf-submit-btn");
+  const loading = new LoadingProgressBar();
+  const MAX_IMAGE_SIZE = 1024 * 1024 * 5 // 5MB
+
+  async function pageMounted() {
+    const params = new URLSearchParams(document.location.search.substring(1));
+    const orderId = params.get("order-id");
+    console.log("LOG:orderId", orderId);
+    const customerOrder = await $.get(`${window.theme.api_url}/entry-orders?order-id=${orderId}`, null, null, "json");
+    console.log("LOG:customerOrder", customerOrder);
+    const customerFName = customerOrder[0].shipping_first_name;
+    const customerLName = customerOrder[0].shipping_last_name;
+    const ogDate = new Date(customerOrder[0].delivery_date);
+    const deliveryDate = ogDate.toLocaleDateString();
+    const orderNumber = customerOrder[0].order_id;
+    const orderEmail = customerOrder[0].email;
+
+    document.getElementById("entry--customerName").innerHTML += customerFName + " " + customerLName;
+    document.getElementById("entry--deliveryDate").innerHTML += deliveryDate;
+    document.getElementById("entry--orderNumber").innerHTML += orderNumber;
+
+    getProductImages(customerOrder);
+
+    // Listen to image uploads
+    imageUploadInput.change(renderImage);
+
+    // Clear error style on input
+    requiredInputs.on("input", function() {
+      $(this).removeClass("invalidInput");
+      $("#wywf-entry--errormsg").hide();
+    });
+
+    // Handle form submission
+    submitBtn.click(async function (e) {
+      e.preventDefault();
+
+      // Validate required inputs
+      const errorsArray = validateForm();
+      const isError = errorsArray.length > 0;
+      if (isError) {
+        $("#wywf-entry--errormsg").show();
+        errorsArray.forEach(({id}) => {
+          $(`#${id}`).addClass("invalidInput");
+          if (id === "image-upload") $("#entry-event--img-container").addClass("invalidInput");
+        });
+      } else {
+        try {
+          $("#wywf-entry--errormsg").hide();
+          showLoading();
+          const formData = await parseFormData();
+          console.log("LOG:formData", formData, JSON.stringify(formData));
+          const response = await submitEntrySubmission(formData);
+          
+          loading.current = loading.total;
+          window.location.href = "/pages/win-your-wedding-flowers-thank-you";
+        } catch (e) {
+          console.log("LOG:Error", e);
+          // TODO
+        }
+      }
+    });
+
+    /**
+     * Get product image url form API and render images
+     */
+    function getProductImages(customerOrder) {
+      // get product images
+      customerOrder.forEach((order) => {
+        const productID = order.product_id;
+        console.log("LOG:productID", productID);
+
+        let productName;
+        let productImg;
+
+        const placeholderImg =
+          "https://cdn.shopify.com/s/files/1/0516/8968/5154/products/flpr_dl_default_720x.jpg?v=1617060542";
+        const productWithoutImgName = order.product_name;
+
+        $.getJSON(`/products/${productID}.js`, function (product) { // TODO handle change
+          productName = product.title;
+          productImg = product.featured_image;
+        }).done(function () {
+          // render products in order
+          const renderOrderProduct = () => {
+            return `<div class="ee--flowers-item">
+                    <img src="${productImg}" alt="${productName}" data-widths="[180, 360, 540, 720, 900, 1080, 1296, 1512, 1728, 2048]" data-aspectratio="1.0" data-sizes="auto" />
+                    <div class="ee--flowers-item-info">
+                        <h3>${productName}</h3>    
+                    </div>
+                </div>`;
+          };
+          $(".ee--flowers-list").append(renderOrderProduct());
+        }).fail(function () {
+          console.log("item does not exist");
+
+          const renderOrderProductWithoutImg = () => {
+            return `<div class="ee--flowers-item">
+                    <img src="${placeholderImg}" alt="${productWithoutImgName}" data-widths="[180, 360, 540, 720, 900, 1080, 1296, 1512, 1728, 2048]" data-aspectratio="1.0" data-sizes="auto" />
+                    <div class="ee--flowers-item-info">
+                        <h3>${productWithoutImgName}</h3>    
+                    </div>
+                </div>`;
+          };
+          $(".ee--flowers-list").append(renderOrderProductWithoutImg());
+        });
+      });
+    }
+
+    /**
+     * Validate and Render Image
+     */
+    function renderImage() {
+      $("#entry-event--img-container").removeClass("invalidInput");
+      $("#uploaded-images-preview").empty();
+      const files = imageUploadInput.get(0).files;
+      const dt = new DataTransfer();
+
+      for (let i = 0; i < files.length; i++) {
+        const file = files[i];
+        if (file.size <= MAX_IMAGE_SIZE) dt.items.add(file);
+      }
+      imageUploadInput.get(0).files = dt.files;
+
+      files.forEach((file) => {
+        const src = URL.createObjectURL(file);
+        const isExceedMaxLimit = file.size > MAX_IMAGE_SIZE;
+        $("#uploaded-images-preview").append(`
+          <div class="entry-event--image">
+            ${isExceedMaxLimit ? `<div class="overlay">
+              <div class="overlay__bg"></div>
+              <p class="overlay__msg">File size exceeds limit<br><span>Maximum file size is 5MB</span></p>
+            </div>` : ""}
+            <div class="content">
+              <img alt="${file.name}" src="${src}"/>
+            </div>
+          </div>
+        `)
+      });
+    }
+
+    /** Update DOM while submitting */
+    function showLoading() {
+      submitBtn.prop("disabled", true);
+      submitBtn.addClass("loading");
+      $("#wywf-entry--loadingbar").show();
+
+      const files = imageUploadInput.get(0).files;
+      loading.clear();
+      files.forEach(file => loading.total += file.size);
+      loading.total += loading.total / 5;
+    }
+
+    function hideLoading() {
+      submitBtn.prop("disabled", false);
+      submitBtn.removeClass("loading");
+    }
+
+    /**
+     * Submit entry submission via API
+     */
+    async function submitEntrySubmission(formData) {
+      return await $.ajax({
+        url: `${window.theme.api_url}/entry-submissions-text`,
+        type: "POST",
+        data: JSON.stringify(formData),
+        dataType: "json"
+      });
+    }
+
+    /**
+     * Parse form data payload from input elements
+     * @return {object} request payload to submission API
+     */
+    async function parseFormData() {
+      const customerName = document.getElementById("entry--customerName").innerHTML;
+      const eventDate = ogDate;
+      const eventOrderNumber = orderNumber;
+      const customerEmail = orderEmail;
+
+      // cart_tesimonial table
+      const city = document.getElementById("wywf-event--city").value;
+      const state = document.getElementById("wywf-event--state").value;
+      const country = document.getElementById("wywf-event--country").value;
+      const venue = document.getElementById("wywf-event--venue").value;
+      const eventPlanner = document.getElementById("wywf-event--planner").value;
+      const storyTitle = document.getElementById("event--story-title").value;
+      const storyBody = document.getElementById("event--story-content").value;
+
+      const eventImages = document.getElementById("image-upload");
+
+      // cart_testimonial_vendor table
+      const eventPhotographer = document.getElementById("event--photographer").value;
+      const eventCaterer = document.getElementById("wywf-event--caterer").value;
+      const eventBridesDress = document.getElementById("wywf-event--dress").value;
+      const eventGroomsAttire = document.getElementById("wywf-event--groom-attire").value;
+      const eventMusic = document.getElementById("wywf-event--dj").value;
+      
+      const imageNames = await uploadImages();
+
+      const entryFormData = {
+        customerName: customerName,
+        customerEmail: customerEmail,
+        eventDate: eventDate,
+        orderId: parseInt(orderId),
+        eventOrderNumber: eventOrderNumber,
+        city: city,
+        state: state,
+        country: country,
+        venue: venue,
+        eventPlanner: eventPlanner,
+        storyTitle: storyTitle,
+        storyBody: storyBody,
+        photographer: eventPhotographer,
+        caterer: eventCaterer,
+        dressDesigner: eventBridesDress,
+        groomsAttire: eventGroomsAttire,
+        band: eventMusic,
+        images: imageNames
+      };
+
+      return entryFormData;
+    }
+  }
+
+  /**
+    * Update progress bar
+    */
+  function renderProgressbar() {
+    const current = loading.current;
+    const total = loading.total;
+    const percentage = Math.max(1, (current / total) * 100);
+    $(".progress-bar-progress").width(`${percentage}%`);
+  }
+
+  /**
+   * Validate required inputs
+   * @returns {object[]} array of input ids with error
+  */
+  function validateForm() {
+    let errorsArray = [];
+    $(".invalidInput").removeClass("invalidInput");
+    requiredInputs.each((_, reqField) => {
+      if (reqField.validity.valueMissing) {
+        errorsArray.push({ id: reqField.id });
+      }
+    });
+    return errorsArray;
+  }
+
+  /**
+    * Uploads images to S3 bucket and retuns image names
+    * @returns {string[]} image names
+  */
+  async function uploadImages() {
+    const fileUploader = imageUploadInput.get(0);
+    const fileList = fileUploader.files;
+
+    const data = await Promise.all(Array.from(fileList).map((file) => uploadImagesToBucket(file)));
+    return data.map(data => data.name + data.extension);
+
+    async function uploadImagesToBucket(file) {
+      const base64 = await toBase64(file);
+      const data = await $.ajax({
+        url: `${window.theme.api_url}/entry-submissions`,
+        type: "post",
+        data: base64,
+        contentType: false
+      });
+      loading.current += file.size;
+      return data;
+    }
+  }
+
+  /** Convert file to base64 */
+  const toBase64 = file => new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.readAsDataURL(file);
+    reader.onload = () => resolve(reader.result);
+    reader.onerror = error => reject(error);
+  });
+  window.onload = pageMounted;
+});
+</script>
+
+{% schema %}
+  {
+    "name": "WYWF Entry Page",
+    "settings": []
+  }
+{% endschema %}
+
+{% stylesheet %}
+{% endstylesheet %}
+
+{% javascript %}
+{% endjavascript %}

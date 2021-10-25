@@ -1,0 +1,578 @@
+{% assign file_extension = 'png' %}
+
+{% liquid 
+  for tag in product.tags
+    if tag contains 'ProductId'
+      assign product_handle = tag | remove: "ProductId_"
+      break
+    endif
+  endfor
+%}
+
+{% capture "form_classes" -%}
+  product-form product-form-{{ section.id }}
+  {%- unless section.settings.show_variant_labels %} product-form--hide-variant-labels {% endunless %}
+  {%- if show_dynamic_checkout and product.has_only_default_variant %} product-form--payment-button-no-variants {%- endif -%}
+  {%- if current_variant.available == false %} product-form--variant-sold-out {%- endif -%}
+{%- endcapture %}
+
+{% capture browse_similar_flowers -%}
+{% assign suggested_collection = null %}
+{% assign all_flowers = linklists.main-menu.links | where: "title", "All Flowers" %}
+{% assign flower_collections = all_flowers.first.links %}
+{% for product_collection in product.collections %}
+  {% for all_collection in flower_collections %}
+    {% if all_collection.title == product_collection.title %}
+      {% assign suggested_collection = all_collection %}
+    {% endif %}
+  {% endfor %}
+{% endfor %}
+{% if suggested_collection != null and suggested_collection != "" %}
+  <a style="display: none;" class="product-form__similar" href="{{ suggested_collection.url }}">{{ 'products.product.browse_similar_flowers' | t }}</a>
+{% endif %}
+{% endcapture %}
+
+{% form 'product',
+  product,
+  class: form_classes,
+  novalidate: 'novalidate',
+  data-product-form: '',
+  data-product-handle: product.handle
+%}
+<div class="product-form__review" id="review-badge">
+  <div class="yotpo bottomLine"
+    data-appkey="AuebmJK3vEB4GKyCZx0Q2ZiFfgKWCEkYp5tHUt86"
+    data-domain="{{shop.permanent_domain | escape }}"
+    data-product-id="{{ product.id }}"
+    data-product-models="{{ product.id }}"
+    data-name="{{ product.title | escape }}"
+    data-url="{{ shop.url }}{{ product.url }}"
+    data-image-url="{{ product.featured_image | product_img_url: 'large' |replace: '?', '%3F' | replace: '&','%26'}}"
+    data-description="{{ product.description | escape }}"
+    data-bread-crumbs="{% for tag in product.tags %}{{ tag | escape }};{% endfor %}">
+  </div>
+  <div class="product-form__reviewcaption">{{ 'product.choose_your_flowers' | t }}</div>
+</div>
+  {% unless product.has_only_default_variant %}
+    <div class="product-form__controls-group">
+      {% for option in product.options_with_values %}
+      	{% if option.position == 1 %}
+          <div class="pf-container product__variant-radio__container">
+            <div class="pf-element js-enabled product__variant-radio__element">
+              {% assign variant_count = product.variants | size %}
+              <div class="product__variant-radio {% if variant_count == 1 %}has-one-variant{% endif %}">
+                {% for variant in product.variants %}
+                  <input {% if product.selected_or_first_available_variant.id == variant.id %}checked{% endif %} class="product__variant-radio__input" type="radio" id="variant-{{ variant.option1 }}" name="options[{{ option.name | escape }}]" value="{{ variant.option1 }}" data-item-id="{{ variant.sku }}" data-variant-id="{{ variant.id }}">
+                  <label for="variant-{{ variant.option1 }}" class="product__variant-radio__item">
+                    {% if variant.image.src %}
+                    	<img src='{{ variant.image.src | img_url }}' class="product__variant-radio__item__img"/>
+                    {% else %}
+                    	<img src='{{ product.featured_image | img_url }}' class="product__variant-radio__item__img"/>
+                    {% endif %}
+                    <div class="product__variant-radio__item__title">{{ variant.title | escape }}</div>
+                    <div class="product__variant-radio__item__price">{{ variant.price | money }}</div>
+                  </label>
+                {% endfor %}
+              </div>
+            </div>
+          </div>
+        {% else %}
+        <div class="pf-container">
+          <div class="pf-element js-enabled">
+            <label for="Option{{ option.position }}" class="pf-label">
+              <span>{{ option.name }}</span>
+            </label>
+
+            {%- if show_swatches -%}
+              {%- assign option_name = option.name | downcase -%}
+              {%- assign option_setting = settings.swatch_option | downcase -%}
+
+              {% if option_name == option_setting %}
+                <div class="product-form__color-swatches" data-product-swatches data-product-option="Option{{ option.position }}">
+                  {% for value in option.values %}
+                    <a
+                      href="#"
+                      data-product-swatch
+                      data-product-swatch-option="{{ value }}"
+                      class="product__color-swatch {% if option.selected_value == value %}selected{% endif %}"
+                      style="background-color: {{ value | lowercase | replace: ' ', '' }}; background-image: url({{ value | handle | append: '.' | append: file_extension | file_url }})"
+                      tabindex="0"
+                    >
+                    </a>
+                  {% endfor %}
+                </div>
+              {% endif %}
+
+            {%- endif -%}
+
+            {% comment %}
+              All inputs that have `name=options[Name]` will be picked up by
+              ProductForm, registered as an option input, and made available
+              at ProductForm.optionsInputs
+            {% endcomment %}
+            <select
+              id="Option{{ option.position }}"
+              class="pf-input {% if option.position == 1 %}product__variant-dropdown{% endif %}"
+              name="options[{{ option.name | escape }}]">
+              {% for value in option.values %}
+                <option value="{{ value | escape }}"
+                  {%- if option.selected_value == value -%}selected="selected"{%- endif -%}>
+                  {{ value }}
+                </option>
+              {% endfor %}
+            </select>
+
+            <div class="pf-icon" data-icon>{% render 'icon' with icon: 'arrow-drop-down' %}</div>
+          </div>
+        </div>
+      	{% endif %}
+      {% endfor %}
+    </div>
+  {% endunless %}
+
+  <div class="product-form__option" id="product-item-options">
+
+  </div>
+
+  <div class="product-form__option" id="product-form-options">
+
+  </div>
+  	
+
+  {% comment %}
+    In order for this form to submit, it needs to contain an input with name="id".
+    ProductForm() will automatically create this input (or make sure it has the
+    right value set if it already exists) on form submit based on the
+    currently selected variant. However, if JS is disabled we need a fallback.
+
+    render a single <select> element which allows users to select all variants
+    as a fallback and present it only when JS is disabled. In addition,
+    make sure you hide the option inputs declared above, like we do with the
+    `.js-enabled` class which only shows its contents when JS is enabled.
+  {% endcomment %}
+  <div class="pf-container product-form__variants no-js">
+    <select
+      name="id"
+      id="ProductSelect-{{ section.id }}"
+      class="input"
+    >
+      {% for variant in product.variants %}
+        <option value="{{ variant.id }}"
+          {%- if variant == current_variant %} selected="selected" {%- endif -%}
+        >
+          {{ variant.title }}  {%- if variant.available == false %} - {{ 'products.product.sold_out' | t }}{% endif %}
+        </option>
+      {% endfor %}
+    </select>
+  </div>
+
+  {% if product.type != 'Gift Card' %}
+    {% if is_quick_add %}
+      {% render 'delivery-date' with form_type: 'quick' %}
+    {% else %}
+      {% render 'delivery-date' with form_type: 'static' %}
+    {% endif %}
+  {% endif %}
+
+  {{ browse_similar_flowers }}
+
+  <div class="pf__actions__container">
+  {% if show_quantity %}
+      <div class="pf-quantity-container">
+        <div class="pf-quantity-element">
+          <label class="pf-quantity-label" for="Quantity-{{ section.id }}">
+            <span>{{ 'products.product.qty' | t }}</span>
+          </label>
+          <input
+            data-quantity-input
+            type="number" id="Quantity-{{ section.id }}"
+            name="quantity" value="1" min="1" pattern="[0-9]*"
+            class="pf-quantity-input"
+          >
+        </div>
+      </div>
+    {% endif %}
+
+
+  
+
+  <div class="pf__actions">
+    <div class="product-form__item product-form__item--submit
+      {%- if show_dynamic_checkout %} product-form__item--payment-button {%- endif -%}
+      {%- if product.has_only_default_variant %} product-form__item--no-variants {%- endif -%}"
+    >
+      <button type="button" name="add"
+        {% if is_quick_add %}
+        id="add-to-cart-button-quick"
+        {% else %}
+        id="add-to-cart-button"
+        {% endif %}      
+        {% unless current_variant.available %} aria-disabled="true" disabled{% endunless %}
+        aria-label="{% unless current_variant.available %}{{ 'product.sold_out' | t }}{% else %}{{ 'products.product.add_to_cart' | t }}{% endunless %}"
+        class="btn btn--full product-form__cart-submit"
+        data-add-to-cart
+        data-lang-available="{{ 'product.add_to_cart' | t }}"
+        data-lang-unavailable="{{ 'product.unavailable' | t }}"
+        data-lang-sold-out="{{ 'product.sold_out' | t }}"
+      >
+        <span data-add-to-cart-text>
+          {% unless current_variant.available %}
+            {{ 'product.sold_out' | t }}
+          {% else %}
+            {{ 'product.add_to_cart' | t }}
+          {% endunless %}
+        </span>
+        <div class="btn__loading-wrap">
+          <div class="btn__loading-bar"></div>
+        </div>
+      </button>
+      {% if show_dynamic_checkout %}
+        {{ form | payment_button }}
+      {% endif %}
+    </div>
+  </div>
+</div>
+
+  {% render 'sticky-product-form' with 
+    product: product,
+    current_variant: current_variant,
+  %}
+{% endform %}
+
+  
+<script>
+$(function () {
+
+/* ------------------------------ Initial Load ------------------------------ */
+
+  /** Load a date picker for static product form */
+  deliveryDateUtil.datepicker(
+    "#datepicker--static",
+    "{{ product_handle }}",
+    {
+      loadingMsg: "{{'delivery_date.loading' | t}}",
+      selectMsg: "{{'delivery_date.select' | t}}",
+    },
+    "{{ customer.id }}",
+    showBestDeliveryDayMessage,
+    showWarningMessage
+  );
+
+  /** Load product item option if exists */
+  const handle = "{{ product_handle }}";
+  const optionContainer = $("#product-item-options");
+  const productOptionContainer = $("#product-form-options");
+
+  // Item options
+  $.get(`${window.theme.api_url}/itemoptions/${handle}`, (data) => {
+    if (!data) return;
+    window.itemOptions = data;
+    const selectedVariant = $(".product__variant-radio__input:checked");
+    const variantSku = selectedVariant.data("item-id");
+
+    renderOptions(data, variantSku);
+  });
+
+  function renderOptions(data, variantSku) {
+    data = Object.entries(data).filter(([key, optionItem]) => optionItem.set_name !== "Add Your Flower Supply and Care Kit" && !optionItem.set_name.toLocaleLowerCase().includes("new dropdown") && optionItem.item_id !== 39579);
+    const values = data.map(([key, val]) => val);
+    const keys = data.map(([key, val]) => key);
+    const isItemOptionItem = keys.map(val => parseInt(val)).includes(variantSku);
+    optionContainer.empty();
+    values.forEach(optionItem => {
+      if (optionItem.set_name === "Add Your Flower Supply and Care Kit" || optionItem.set_name.toLocaleLowerCase().includes("new dropdown") || optionItem.item_id === 39579) return;
+      const hide = isItemOptionItem && parseInt(optionItem.item_id) !== variantSku;
+      optionContainer.append(`
+        <div class="product-form__option__field ${hide ? "hidden" : ""}">
+          <label class="product-form__option__field__label" for="${optionItem.item_id}">${optionItem.set_name}</label>
+          <select class="product-form__option__field__input product-item-options" name="${optionItem.item_id}" id="${optionItem.item_id}">
+            ${renderItemFieldOptions(optionItem.itemOptions)}
+          </select>
+        </div>
+      `);
+    })
+  }
+
+  // Product options
+   $.get(`${window.theme.api_url}/productoptions/${handle}`, (data) => {
+    if (!data) return;
+    productOptionContainer.empty();
+    Object.values(data).forEach(optionItem => {
+      productOptionContainer.append(`
+        <div class="product-form__option__field">
+          <label class="product-form__option__field__label" for="${optionItem.set_name}">${optionItem.set_name}</label>
+          <select class="product-form__option__field__input product-options" name="${optionItem.set_name}" id="${optionItem.set_name}">
+            ${renderProductOptions(optionItem.options)}
+          </select>
+        </div>
+      `);
+    })
+  });
+
+  /** Fix review URL */
+  $("body").on("click", "#review-badge .yotpo-bottomline a", () => {
+    document.querySelector(".page-transition").style.opacity = 0;
+    document.querySelector(".page-transition").style.pointerEvents = 'none';
+    document.querySelector(".page-transition").style.visibility = 'hidden';
+  })
+
+/* ----------------------------- Click Handlers ----------------------------- */
+
+  /** Add to cart button functionality when loaded as a static form */
+  $("#add-to-cart-button").click(async () => {
+    let deliveryDate = "";
+    // Validate delivery date
+    if ("Gift Card" !== "{{ product.type }}") {
+      deliveryDate = getDeliveryDate();
+      if (
+        !deliveryDateUtil.validateDateStr(deliveryDate, "{{ product_handle }}")
+      ) {
+        showDeliveryDateError();
+        return;
+      } else {
+        hideErrorAndShowBestDeliveryDate();
+      }
+    }
+
+    // Gather custom product 'item' options if exists
+    let productOptions = {};
+    const productOptionElems = $(".product-form__option__field:not('.hidden') .product-item-options");
+    let productOptionSurcharge = 0;
+    productOptionElems.each((_, elem) => {
+      const key = `_${$(elem).prop('name')}`;
+      const [val, price] = $(elem).val().split("|");
+      productOptions[key] = val;
+      productOptionSurcharge += parseInt(price);
+    })
+
+    // Gather custom product options if exists
+    let productOptions2 = [];
+    const productOptionElems2 = $(".product-options");
+    productOptionElems2.each((_, elem) => {
+      const [val, price] = $(elem).val().split("|");
+      productOptions2.push(val);
+      productOptionSurcharge += parseInt(price);
+    })
+
+
+    // Add items to cart
+    startAddCartBtnLoading();
+    let quantity = getQuantity();
+    await cartService.addItemToCart(
+      getVariantId(),
+      quantity,
+      deliveryDate,
+      "{{ product_handle }}",
+      {
+        _productOptions: productOptions,
+        _productOptions2: productOptions2,
+        _productOptionsSurcharge: productOptionSurcharge
+      }
+    );
+
+    // Add additional item to cart
+    let variantId = "";
+    let handle = "";
+    {% assign addproduct = product.metafields.airf.addproduct %}
+    {% if addproduct and addproduct != blank %}
+    variantId = "{{addproduct['variant_id']}}";
+    handle = "{{addproduct['handle']}}";
+    {% endif %}
+    
+    if (variantId && handle) {
+      await cartService.addItemToCart(variantId, quantity, deliveryDate, handle);
+      quantity += quantity;
+    }
+
+    // Add surcharge items to cart
+    const {
+      items: initialCartItems,
+      item_count: initialCartItemCount,
+      items_subtotal_price: initialSubtotal,
+    } = await cartService.getCartInfo();
+
+    var hasSaturdayDelivery = false;
+    var hasSaturdayDeliveryProduct = false;
+    var saturdayDeliveryDate;
+
+    initialCartItems.forEach((cartItem) => {
+      var expectedDeliveryDate = cartItem.properties["Delivery Date"];
+
+      var itemDelivery = new Date(expectedDeliveryDate);
+      var deliveryDay = itemDelivery.getDay();
+
+      // If delivery date is saturday
+      if (deliveryDay === 6 && cartItem.variant_id !== 39557608407202) {
+        hasSaturdayDelivery = true;
+        const existingSaturdayDelivery = initialCartItems.find(item => item.variant_id === 39557608407202);
+        const existingDeliveryDate = existingSaturdayDelivery && existingSaturdayDelivery.properties["Delivery Date"];
+        saturdayDeliveryDate = existingDeliveryDate || expectedDeliveryDate;
+      }
+
+      if (cartItem.variant_id === 39557608407202) {
+        hasSaturdayDeliveryProduct = true;
+      }
+    });
+
+    if (hasSaturdayDelivery) {
+      await cartService.addItemToCart(
+        39557608407202,
+        quantity,
+        saturdayDeliveryDate,
+        "saturday-delivery"
+      );
+    }
+
+    // Update cart 
+    const {
+      items: cartItems,
+      item_count: cartItemCount,
+      items_subtotal_price: subtotal,
+    } = await cartService.getCartInfo();
+
+    quickCart.updateCart({
+      subtotal: subtotal,
+      itemCount: cartItemCount,
+      items: cartItems,
+      openCart: true,
+    });
+
+    stopAddCartBtnLoading();
+  });
+
+  /* On date picker input change */
+  $("#datepicker--static").change(function () {
+    const dateVal = $(this).val();
+    const messageElem = $(".product__panel .pf-label--static  span");
+    if (dateVal) {
+      messageElem.text(theme.strings.products.product.delivery_date);
+    } else {
+      messageElem.text(theme.strings.products.product.choose_delivery_date);
+    }
+  });
+
+/* ---------------------------- Helper Functions ---------------------------- */
+  const getVariantId = () => {
+    const searchParams = new URLSearchParams(window.location.search);
+    const variantIdFromParam = searchParams.get("variant");
+    const variantId = variantIdFromParam || {{ product.selected_or_first_available_variant.id }};
+    return variantId;
+  };
+
+  const getQuantity = () => parseInt($("#Quantity-{{ section.id }}").val()) || 1;
+  const getDeliveryDate = () => $("#datepicker--static").val();
+
+  const startAddCartBtnLoading = () =>
+    $("#add-to-cart-button").addClass("loading");
+  const stopAddCartBtnLoading = () =>
+    $("#add-to-cart-button").removeClass("loading");
+
+  const showDeliveryDateError = () => {
+    $("#datepicker-msg--static")
+      .removeClass("warning")
+      .addClass("visible error")
+      .text("{{ 'delivery_date.invalid_delivery_date' | t }}");
+    $("#datepicker-container--static label").addClass("error");
+  };
+  const hideErrorAndShowBestDeliveryDate = () => {
+    if ($("#datepicker-msg--static").hasClass("error")) {
+      showBestDeliveryDayMessage("{{ product_handle }}");
+      $("#datepicker-msg--static").removeClass("error warning");
+      $("#datepicker-container--static label").removeClass("error");
+    }
+  };
+
+  function showBestDeliveryDayMessage(handle) {
+    const bestDeliveryDay =
+      deliveryDateUtil.deliveryDateInfo[handle].data.best_delivery_day;
+    $("#datepicker-msg--static").addClass(
+      "visible"
+    ).html(`{{ 'delivery_date.best_delivery_pre' | t }} 
+${bestDeliveryDay} {{ 'delivery_date.best_delivery_post' | t }} 
+<a onclick="handleOpenCalendar()">{{ 'delivery_date.best_delivery_event' | t }}</a>`);
+  }
+
+  const handleOpenCalendar = () => {
+    $(".event-date")
+      .addClass("active")
+      .delay(100)
+      .queue(() => $(".event-date").addClass("visible").dequeue());
+  };
+  window.handleOpenCalendar = handleOpenCalendar;
+
+  function showWarningMessage() {
+    $("#datepicker-msg--static")
+      .addClass("visible warning")
+      .html(
+        "{{ 'delivery_date.warning'  | t }} <a onclick='handleOpenCalendar()''>{{ 'delivery_date.warning_event_date' | t }}</a>"
+      );
+    const browseSimilarFlowers = $(".product-form__similar");
+    browseSimilarFlowers.show();
+    browseSimilarFlowers.appendTo("#datepicker-msg--static")
+    $(".pf-container--datepicker--static").addClass("unavailable");
+  }
+
+  const renderItemFieldOptions = (itemOptions) => {
+    let optionsHtml = "";
+    itemOptions.forEach(itemOption => {
+      const additionalPrice = itemOption.price_change > 0 ? ` (Add $${itemOption.price_change}.00)` : "";
+      optionsHtml += `
+        <option value="${itemOption.item_option_id}|${itemOption.price_change}">${itemOption.option_name}${additionalPrice}</option>
+      `
+    })
+    return optionsHtml;
+  }
+
+  const renderProductOptions = (productOptions) => {
+    let optionsHtml = "";
+    productOptions.forEach(option => {
+      const additionalPrice = option.price_change > 0 ? ` (Add $${option.price_change}.00)` : "";
+      optionsHtml += `
+        <option value="${option.product_option_id}|${option.price_change}">${option.option_name}${additionalPrice}</option>
+      `
+    })
+    return optionsHtml;
+  }
+
+  
+/* -------------------------- Handle Variant Change ------------------------- */
+  function usePushState(handler){
+    //modern themes use pushstate to track variant changes without reload
+    function track (fn, handler, before) {
+      return function interceptor () {
+        if (before) {
+          handler.apply(this, arguments);
+          return fn.apply(this, arguments);
+        } else {
+          var result = fn.apply(this, arguments);
+          handler.apply(this, arguments);
+          return result;
+        }
+      };
+    }
+
+    var currentVariantId = null;
+    function variantHandler () {
+      var selectedVariantId = window.location.search.replace(/.*variant=(\d+).*/, '$1');
+      if(!selectedVariantId) return;
+      if(selectedVariantId != currentVariantId){
+        currentVariantId = selectedVariantId;
+        handler(selectedVariantId);
+      }
+    }
+
+    // Assign listeners
+    window.history.pushState = track(history.pushState, variantHandler);
+    window.history.replaceState = track(history.replaceState, variantHandler);
+    window.addEventListener('popstate', variantHandler);
+  }
+
+
+  usePushState(function(variantId) {
+    const variantInput = $(`[data-variant-id="${variantId}"]`);
+    const variantSku = $(variantInput).data("item-id");
+    if (window.itemOptions) renderOptions(window.itemOptions, variantSku);
+  });
+});
+
+</script>

@@ -1,0 +1,13 @@
+<div class="lightbox" data-lightbox>
+  <div class="lightbox__images" data-images>
+    <button class="lightbox__close" data-close>
+      {% render 'slider-button' with icon: 'close' %}
+    </button>
+
+    {%- for image in images -%}
+      <div class="lightbox__image" data-id="{{ image.id }}">
+        {% render 'image' with image: image %}
+      </div>
+    {%- endfor -%}
+  </div>
+</div>

@@ -1,0 +1,77 @@
+{% assign desktop_opacity = block.settings.text_background_opacity_desktop | times: 0.01 %}
+{% assign mobile_opacity = block.settings.text_background_opacity_mobile | times: 0.01 %}
+{% assign subheader = block.settings.subheader %}
+{% assign subhead_image = block.settings.subhead_image %}
+{% assign header = block.settings.header %}
+{% assign header_font = block.settings.header_font %}
+{% assign paragraph = block.settings.paragraph %}
+{% assign button_label = block.settings.button_label %}
+{% assign button_link = block.settings.button_link %}
+{% assign image_desktop = block.settings.image_desktop %}
+{% assign image_mobile = block.settings.image_mobile %}
+{% assign text_color = block.settings.text_color %}
+{% assign text_background_color = block.settings.text_background_color %}
+{% assign text_background_opacity_desktop = block.settings.text_background_opacity_desktop %}
+{% assign text_background_opacity_mobile = block.settings.text_background_opacity_mobile %}
+{% assign text_background_desktop = block.settings.text_background_desktop %}
+{% assign text_background_mobile = block.settings.text_background_mobile %}
+{% assign image_position_desktop = block.settings.image_position_desktop %}
+{% assign image_position_mobile = block.settings.image_position_mobile %}
+{% assign text_alignment = block.settings.text_alignment %}
+
+<section id="block--{{ block.id }}" class="content-template__hero Section Section--spacingNormal" {{ block.shopify_attributes }}>
+  <div class="hero">
+    <div class="hero__inner desktop-{{ image_position_desktop }} mobile-{{ image_position_mobile }}">
+      <div class="hero__image--wrap">
+        <img class="hero__image--desktop" src="{{ image_desktop | img_url: 'master' }}" alt="{{ image_desktop.alt | escape }}">
+        <img class="hero__image--mobile" src="{{ image_mobile | img_url: 'master' }}" alt="{{ image_mobile.alt | escape }}">
+      </div>
+
+      <div class="hero__content {{ text_alignment }}">
+        {% if subhead_image != blank %}
+          <div class="hero__subhead-image--wrapper">
+            <img class="hero__subhead-image" src="{{ subhead_image | img_url: 'master' }}" alt="{{ subhead_image.alt | escape }}">
+          </div>
+        {% elsif subheader != blank %}
+          <h2 class="hero__subheader">{{ subheader }}</h2>
+        {% endif %}
+
+        {% if header != blank %}
+          <h1 class="hero__header font-{{ header_font }}">{{ header }}</h1>
+        {% endif %}
+
+        {% if paragraph != blank %}
+          <p class="hero__paragraph p1">{{ paragraph }}</p>
+        {% endif %}
+
+        {% if button_label != blank %}
+          <a class="hero__cta" href="{{ button_link }}">{{ button_label }}</a>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+</section>
+
+<style> 
+    #block--{{ block.id }} .hero__content {
+      color: {{ text_color }};
+    }
+
+    #block--{{ block.id }} .hero__content::after {
+      {% if text_background_mobile or image_position_mobile == 'image-above' %}
+        background-color: {{ text_background_color | color_modify: 'alpha', mobile_opacity }};
+      {% endif %}
+    }
+
+    #block--{{ block.id }} .hero__cta {
+      border-color: {{ text_color }};
+    }
+
+    {% if text_background_desktop %}
+      @media screen and (min-width: 769px) {
+        #block--{{ block.id }} .hero__content {
+          background-color: {{ text_background_color | color_modify: 'alpha', desktop_opacity }};
+        }
+      }
+    {% endif %}
+</style>

@@ -1,0 +1,89 @@
+{% assign subheader = block.settings.subheader %}
+{% assign title = block.settings.title %}
+{% assign product_1 = block.settings.product_1 %}
+{% assign product_2 = block.settings.product_2 %}
+{% assign product_3 = block.settings.product_3 %}
+{% assign product_4 = block.settings.product_4 %}
+{% assign block_img_1 = block.settings.block_img_1 %}
+{% assign block_img_2 = block.settings.block_img_2 %}
+{% assign block_img_3 = block.settings.block_img_3 %}
+{% assign block_img_4 = block.settings.block_img_4 %}
+{% assign block_title_1 = block.settings.block_title_1 %}
+{% assign block_title_2 = block.settings.block_title_2 %}
+{% assign block_title_3 = block.settings.block_title_3 %}
+{% assign block_title_4 = block.settings.block_title_4 %}
+{% assign block_text_1 = block.settings.block_text_1 %}
+{% assign block_text_2 = block.settings.block_text_2 %}
+{% assign block_text_3 = block.settings.block_text_3 %}
+{% assign block_text_4 = block.settings.block_text_4 %}
+{% assign block_link_label_1 = block.settings.block_link_label_1 %}
+{% assign block_link_label_2 = block.settings.block_link_label_2 %}
+{% assign block_link_label_3 = block.settings.block_link_label_3 %}
+{% assign block_link_label_4 = block.settings.block_link_label_4 %}
+{% assign tabs = '1, 2, 3, 4' | split: ', '%}
+
+<section id="block--{{ block.id }}" class="content-template__column-blocks Section Section--spacingNormal" {{ block.shopify_attributes }}>
+  <div class="Container Content-Blocks">
+  
+    <div class="Content-Blocks__HeaderWrap">
+      <span class="Content-Blocks__Subheader">{{ subheader }}</span>
+      <h2 class="Content-Blocks__Header h2">{{ title }}</h2>
+    </div>
+
+    <div class="Content-Blocks__Wrapper">
+      {%- for tab in tabs -%}
+        {% if tab == '1' %}
+          {% assign tab_product = product_1 | handleize %}
+          {% assign tab_img = block_img_1 %}
+          {% assign tab_title = block_title_1 %}
+          {% assign tab_text = block_text_1 %}
+          {% assign tab_link_label = block_link_label_1 %}
+        {% elsif tab == '2' %}
+          {% assign tab_product = product_2 | handleize %}
+          {% assign tab_img = block_img_2 %}
+          {% assign tab_title = block_title_2 %}
+          {% assign tab_text = block_text_2 %}
+          {% assign tab_link_label = block_link_label_2 %}
+        {% elsif tab == '3' %}
+          {% assign tab_product = product_3 | handleize %}
+          {% assign tab_img = block_img_3 %}
+          {% assign tab_title = block_title_3 %}
+          {% assign tab_text = block_text_3 %}
+          {% assign tab_link_label = block_link_label_3 %}
+        {% elsif tab == '4' %}
+          {% assign tab_product = product_4 | handleize %}
+          {% assign tab_img = block_img_4 %}
+          {% assign tab_title = block_title_4 %}
+          {% assign tab_text = block_text_4 %}
+          {% assign tab_link_label = block_link_label_4 %}
+        {% endif %}
+        {% if tab_product != empty %}
+          <div class="Content-Blocks__Block">
+            <div class="Content-Blocks__Image">
+              {% if tab_img %}
+                <img src="{{ tab_img | img_url: '300x300' }}" alt="{{ tab_img.alt | escape }}">
+              {% else %}
+                <img src="{{ all_products[tab_product].featured_image | img_url: '300x300' }}" alt="{{ all_products[tab_product].alt | escape }}">
+              {% endif%}
+            </div>
+            <div class="Content-Blocks__Info">
+              {% if tab_title !=empty %}
+                <h4 class="Content-Blocks__Title h4">{{ tab_title }}</h4>
+              {% else %}
+                <h4 class="Content-Blocks__Title h4">{{ all_products[tab_product].title }}</h4>
+              {% endif %}
+              {% if tab_text !=empty %}
+                <div class="Content-Blocks__Text p2">{{ tab_text }}</div>
+              {% endif %}
+              {% if tab_link_label !=empty %}
+                <div class="Content-Blocks__Link">
+                  <a href="{{ all_products[tab_product].url }}"> {{ tab_link_label }}</a>
+                </div>
+              {% endif %}
+            </div>
+          </div>
+        {% endif %}
+      {%- endfor -%}
+    </div>
+  </div>
+</section>

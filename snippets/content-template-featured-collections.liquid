@@ -1,0 +1,9 @@
+{% assign section_id = section.id | append: '-' | append: block.id %}
+{% include 'featured-collections', 
+  section_id: section_id,
+  title: block.settings.title,
+  subtitle: block.settings.subtitle, 
+  collection: collections[block.settings.collection],
+  link: block.settings.link,
+  show_color_swatch: block.settings.show_color_swatch
+%}

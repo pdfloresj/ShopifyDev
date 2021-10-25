@@ -1,0 +1,71 @@
+{% assign mobile_image = block.settings.mobile_image %}
+{% assign desktop_image = block.settings.desktop_image %}
+{% assign background_color = block.settings.background_color %}
+{% assign subheading = block.settings.subheading %}
+{% assign subheading_color = block.settings.subheading_color %}
+{% assign title = block.settings.title %}
+{% assign title_style = block.settings.title_style %}
+{% assign title_color = block.settings.title_color %}
+{% assign body = block.settings.content %}
+{% assign body_color = block.settings.body_color %}
+{% assign link_url = block.settings.link_url %}
+{% assign link_text = block.settings.link_text %}
+{% assign link_color = block.settings.link_color %}
+
+<section id="block--{{ block.id }}" class="content-template__banner Section Section--spacingNormal" {{ block.shopify_attributes }}>
+  <div class="take-a-look">
+    <div class="take-a-look__inner">
+      {% if mobile_image != blank %}
+        <div class="take-a-look__image hidden-tablet-and-up">
+          <img src="{{ mobile_image | img_url: "320x329" }}" alt="{{ mobile_image.alt | escape }}">
+        </div>
+      {% endif %}
+      {% if desktop_image != blank %}
+        <div class="take-a-look__image hidden-phone">
+          <img src="{{ desktop_image | img_url: "2880x650" }}" alt="{{ desktop_image.alt | escape }}">
+        </div>
+      {% endif %}
+      <div class="take-a-look__content">
+        {% if subheading != blank %}
+          <div class="take-a-look__content-subtitle">
+            {{ subheading }}
+          </div>
+        {% endif %}
+        {% if title != blank %}
+          <div class="take-a-look__content-title heading-{{ title_style }}">
+            {{ title }}
+          </div>
+        {% endif %}
+        {% if body != blank %}
+          <div class="take-a-look__content-body">
+            {{ body }}
+          </div>
+        {% endif %}
+        <div class="take-a-look__content-link">
+          <a href="{{ link_url }}">
+            {{ link_text}}
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+  </section>
+
+<style>
+  #block--{{ block.id }} > .take-a-look {
+    background-color: {{ background_color }};
+  }
+  #block--{{ block.id }} .take-a-look__content-subtitle {
+    color: {{ subheading_color }};
+  }
+  #block--{{ block.id }} .take-a-look__content-title {
+    color: {{ title_color }};
+  }
+  #block--{{ block.id }} .take-a-look__content-body {
+    color: {{ body_color }};
+  }
+  #block--{{ block.id }} .take-a-look__content-link {
+    color: {{ link_color }};
+    border-color: {{ link_color }};
+  }
+</style>

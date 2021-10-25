@@ -1,0 +1,160 @@
+{% assign tab_size = block.settings.tab_size %}
+{% assign text_background_color_1 = block.settings.text_background_color_1 %}
+{% assign text_font_color_1 = block.settings.text_font_color_1 %}
+{% assign header_font = block.settings.header_font %}
+{% assign image_1 = block.settings.image_1 %}
+{% assign subheading_1 = block.settings.subheading_1 %}
+{% assign heading_1 = block.settings.heading_1 %}
+{% assign content_1 = block.settings.content_1 %}
+{% assign link_label_1 = block.settings.link_label_1 %}
+{% assign link_1 = block.settings.link_1 %}
+{% assign mobile_text_alignment_1 = block.settings.mobile_text_alignment_1 %}
+{% assign text_background_color_2 = block.settings.text_background_color_2 %}
+{% assign text_font_color_2 = block.settings.text_font_color_2 %}
+{% assign image_2 = block.settings.image_2 %}
+{% assign subheading_2 = block.settings.subheading_2 %}
+{% assign heading_2 = block.settings.heading_2 %}
+{% assign content_2 = block.settings.content_2 %}
+{% assign link_label_2 = block.settings.link_label_2 %}
+{% assign link_2 = block.settings.link_2 %}
+{% assign mobile_text_alignment_2 = block.settings.mobile_text_alignment_2 %}
+{% assign text_background_color_3 = block.settings.text_background_color_3 %}
+{% assign text_font_color_3 = block.settings.text_font_color_3 %}
+{% assign image_3 = block.settings.image_3 %}
+{% assign subheading_3 = block.settings.subheading_3 %}
+{% assign heading_3 = block.settings.heading_3 %}
+{% assign content_3 = block.settings.content_3 %}
+{% assign link_label_3 = block.settings.link_label_3 %}
+{% assign link_3 = block.settings.link_3 %}
+{% assign mobile_text_alignment_3 = block.settings.mobile_text_alignment_3 %}
+
+{% if tab_size == '1' %}
+  {% assign tabs = '1, ' | split: ', ' %}
+{% elsif tab_size == '2' %}
+  {% assign tabs = '1, 2, ' | split: ', ' %}
+{% elsif tab_size == '3' %}
+  {% assign tabs = '1, 2, 3, ' | split: ', ' %}
+{% endif %}
+<section id="block--{{ block.id }}" class="content-template__tabbed-content Section Section--spacingNormal" data-section-type="timeline" {{ block.shopify_attributes }}>
+  <div class="Container">
+    <div class="Timeline Tabbed-Content">
+      <div class="Timeline__ListItem">
+        {%- for tab in tabs -%}
+          {% if tab == '1' %}
+            {% assign tab_image = image_1 %}
+            {% assign tab_subheading = subheading_1 %}
+            {% assign tab_heading = heading_1 %}
+            {% assign tab_content = content_1 %}
+            {% assign tab_link_label = link_label_1 %}
+            {% assign tab_link = link_1 %}
+            {% assign mobile_text_alignment = mobile_text_alignment_1 %}
+          {% elsif tab == '2' %}
+            {% assign tab_image = image_2 %}
+            {% assign tab_subheading = subheading_2 %}
+            {% assign tab_heading = heading_2 %}
+            {% assign tab_content = content_2 %}
+            {% assign tab_link_label = link_label_2 %}
+            {% assign tab_link = link_2 %}
+            {% assign mobile_text_alignment = mobile_text_alignment_2 %}
+          {% elsif tab == '3' %}
+            {% assign tab_image = image_3 %}
+            {% assign tab_subheading = subheading_3 %}
+            {% assign tab_heading = heading_3 %}
+            {% assign tab_content = content_3 %}
+            {% assign tab_link_label = link_label_3 %}
+            {% assign tab_link = link_3 %}
+            {% assign mobile_text_alignment = mobile_text_alignment_3 %}
+          {% endif %}
+
+          <div class="Timeline__Item Timeline__Item--{{ tab }} {% if forloop.first %}is-selected{% endif %}" data-index="{{ forloop.index0 }}">
+            <div class="Timeline__ImageWrapper" {% if tab_image %}style="background: url({{ tab_image | img_url: '1x1' }})"{% endif %}>
+              {%- if tab_image -%}
+                <div class="Timeline__Image Image--lazyLoad hide-no-js" data-bgset="{{ tab_image | img_url: 'x650' }} [(max-width: 640px)] | {{ tab_image | img_url: '1000x' }}"></div>
+
+                <noscript>
+                  <div class="Timeline__Image" style="background-image: url({{ tab_image | img_url: '1000x' }})"></div>
+                </noscript>
+
+                {% if tab_image.alt != empty %}<span role="img" aria-label="{{ tab_image.alt | escape }}"></span>{% endif %}
+                
+              {%- else -%}
+                <div class="Timeline__Image">
+                    {%- capture placeholder -%}{% cycle 'lifestyle-1', 'lifestyle-2' %}{%- endcapture -%}
+                    {{ placeholder | placeholder_svg_tag: 'PlaceholderBackground__Svg PlaceholderSvg--dark' }}
+                </div>
+              {%- endif -%}
+            </div>
+
+            {%- capture section_inner -%}
+              {%- if tab_subheading != empty or tab_heading != empty -%}
+                <header class="Timeline__Header SectionHeader{% if mobile_text_alignment == 'center'%} SectionHeader--center{% endif %}">
+                  {%- if tab_subheading != empty -%}
+                    <h3 class="SectionHeader__SubHeading Heading">{{ tab_subheading | escape }}</h3>
+                  {%- endif -%}
+
+                  {%- if tab_heading != empty -%}
+                    <h2 class="SectionHeader__Heading Heading u-h1 font-{{ header_font | escape }}">{{ tab_heading | escape }}</h2>
+                  {%- endif -%}
+
+                  {%- if tab_content != empty -%}
+                    <div class="SectionHeader__Description Rte">
+                      {{ tab_content }}
+                    </div>
+                  {%- endif -%}
+
+                  {% if tab_link != empty and tab_link_label != empty %}
+                      <a href="{{ tab_link }}" class="SectionHeader__Link Link Link--underline">{{ tab_link_label | upcase }}</a>
+                  {% endif %}
+                </header>
+              {%- endif -%}
+            {%- endcapture -%}
+
+            {%- if section_inner -%}
+              <div class="Timeline__Inner">
+                {{ section_inner }}
+              </div>
+            {%- endif -%}
+          </div>
+        {%- endfor -%}
+      </div>
+
+      {%- if tab_size == '2' or tab_size == '3' -%}
+        <div class="Timeline__Nav">
+          <div class="Timeline__NavWrapper">
+            {%- for tab in tabs -%}
+              <button type="button" class="Timeline__NavItem {% if forloop.first %}is-selected{% endif %} Link Link--primary" data-index="{{ forloop.index0 }}">
+                <span class="Timeline__NavLabel"></span>
+              </button>
+            {%- endfor -%}
+          </div>
+        </div>
+      {%- endif -%}
+    </div>
+  </div>
+</section>
+
+<style>
+  {% for tab in tabs %}
+    {% if tab == '1' %}
+      {% assign tab_bg_color = text_background_color_1 %}
+      {% assign tab_font_color = text_font_color_1 %}
+    {% elsif tab == '2' %}
+      {% assign tab_bg_color = text_background_color_2 %}
+      {% assign tab_font_color = text_font_color_2 %}
+    {% elsif tab == '3' %}
+      {% assign tab_bg_color = text_background_color_3 %}
+      {% assign tab_font_color = text_font_color_3 %}
+    {% endif %}
+    
+    #block--{{ block.id }} .Timeline__Item--{{ tab }} {
+      background-color: {{ tab_bg_color }};
+    }
+
+    #block--{{ block.id }} .Timeline__Item--{{ tab }} .SectionHeader__SubHeading,
+    #block--{{ block.id }} .Timeline__Item--{{ tab }} .SectionHeader__Heading,
+    #block--{{ block.id }} .Timeline__Item--{{ tab }} .SectionHeader__Description,
+    #block--{{ block.id }} .Timeline__Item--{{ tab }} .SectionHeader__Link {
+      color: {{ tab_font_color }};
+    }
+  {% endfor %}
+</style>

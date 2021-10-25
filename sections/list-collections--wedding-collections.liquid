@@ -1,0 +1,94 @@
+{% liquid
+  assign per_row = section.settings.per_row
+  assign sort = section.settings.sort
+  assign suffix = section.settings.suffix
+  assign show_filter = section.settings.show_filter
+%}
+
+<div class="s-inline-section">
+  <div class="list-collections__header">
+    <h1 class="list-collections__heading ff-heading fs-heading-base c-heading">{{ page_title }}</h1>
+    {% if show_filter %}{% render 'list-collections-filter' %}{% endif %}
+  </div>
+
+  <div class="grid" id="wedding-stories-collection-list">
+    
+  </div>
+</div>
+
+<script>
+  $(function() {
+    const SORTKEY_MAP = {
+      new: { sortKey: "UPDATED_AT", reverse: true },
+      old: { sortKey: "UPDATED_AT", reverse: false },
+      title_asc: { sortKey: "TITLE", reverse: false },
+      title_desc: { sortKey: "TITLE", reverse: true },
+    };
+    const {sortKey, reverse} = SORTKEY_MAP["{{sort}}"]
+    window.Collections.load({
+      sortKey: sortKey, 
+      suffix: "{{suffix}}", 
+      listElem: "#wedding-stories-collection-list", 
+      perRow: "{{per_row}}",
+      reverse: reverse,
+    });
+    window.Collections.getCollections();
+  });
+</script>
+
+
+{% schema %}
+  {
+    "name": "Collections list page",
+    "settings": [
+      {
+        "type": "range",
+        "id": "per_row",
+        "label": "Collections per row",
+        "min": 2,
+        "max": 8,
+        "step": 1,
+        "default": 3
+      },
+      {
+        "type": "paragraph",
+        "content": "If collections doesn't show up after changing the settings, save and refresh."
+      },
+      {
+        "type": "select",
+        "id": "sort",
+        "label": "Sort By",
+        "options": [
+          {
+            "value": "new",
+            "label": "Recently Updated"
+          },
+          {
+            "value": "old",
+            "label": "Oldest"
+          },
+          {
+            "value": "title_asc",
+            "label": "Alphabetical (A-Z)"
+          },
+          {
+            "value": "title_desc",
+            "label": "Alphabetical (Z-A)"
+          }
+        ],
+        "default": "new"
+      },
+      {
+        "type": "text",
+        "id": "suffix",
+        "label": "Template suffix to show"
+      },
+      {
+        "type": "checkbox",
+        "id": "show_filter",
+        "label": "Show Filter Dropdown",
+        "default": true
+      }
+    ]
+  }
+{% endschema %}

@@ -1,0 +1,50 @@
+{% assign bg_color = block.settings.bg_color %}
+{% assign text_color = block.settings.text_color %}
+{% assign title = block.settings.title %}
+{% assign content = block.settings.paragraph %}
+{% assign image_left = block.settings.image_left %}
+{% assign image_right = block.settings.image_right %}
+{% assign product_1 = block.settings.product_1 %}
+{% assign product_2 = block.settings.product_2 %}
+{% assign product_3 = block.settings.product_3 %}
+{% assign product_4 = block.settings.product_4 %}
+
+{% capture product_array %}
+  {{ product_1 }}, {{ product_2 }}, {{ product_3 }}, {{ product_4 }}
+{% endcapture %}
+{% assign selected_products = product_array | split: ', ' %}
+
+<section id="block--{{ block.id }}" class="content-template__featured-looks Section Section--spacingNormal" {{ block.shopify_attributes }}>
+  <div class="featured-looks">
+    <div class="featured-looks__inner">
+      <div class="featured-looks__header">
+        <h2 class="featured-looks__title">{{ title }}</h2>
+        <div class="featured-looks__text p2">{{ content }}</div>
+      </div>
+      <div class="featured-looks__image--wrapper">
+        <div class="featured-looks__image featured-looks__image--left">
+          <img src="{{ image_left | img_url: '500x500' }}" alt="{{ image_left.alt | escape }}">
+        </div>
+        <div class="featured-looks__image featured-looks__image--right hidden-pocket">
+          <img src="{{ image_right | img_url: '500x500' }}" alt="{{ image_right.alt | escape }}">
+        </div>
+      </div>
+    </div>
+    <div class="featured-looks__products">
+      {% for product_item in selected_products %}
+        {% assign product_handle = product_item | handleize %}
+        {% assign new_product = all_products[product_handle] %}
+        {%- render 'product-item', product: new_product, show_product_info: true, show_vendor: true -%}
+      {% endfor %}
+    </div>
+  </div>
+</section>
+<style>
+  #block--{{ block.id }} .featured-looks::after,
+  #block--{{ block.id }} .featured-looks__inner::before {
+    background-color: {{ bg_color }};
+  }
+  #block--{{ block.id }} .featured-looks__header {
+    color: {{ text_color }};
+  }
+</style>

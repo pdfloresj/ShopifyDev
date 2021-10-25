@@ -1,0 +1,1489 @@
+{% comment %}
+  To create a new page template, duplicate all of this code and include it in the duplicated page.content-base.liquid file
+{% endcomment %}
+
+<div class="content-template" data-section-id="{{ section.id }}" data-section-type="static-content-template">
+  {% include 'content-builder-section-block' for section.blocks as block %}
+</div>
+
+{% schema %}
+  {
+    "name": "Content Template",
+    "blocks": [
+      {
+        "type": "hero",
+        "name": "Hero",
+        "settings": [
+          {
+            "type": "header",
+            "content": "Hero Content"
+          },
+          {
+            "type": "text",
+            "id": "subheader",
+            "label": "Subheader",
+            "info": "Appears above heading, unless subhead logo uploaded"
+          },
+          {
+            "type": "image_picker",
+            "id": "subhead_image",
+            "label": "Subheader Logo",
+            "info": "Appears above heading, will override subheader text"
+          },
+          {
+            "type": "text",
+            "id": "header",
+            "label": "Header",
+            "info": "Up to 30 characters",
+            "default": "Header Title"
+          },
+          {
+            "type": "select",
+            "id": "header_font",
+            "label": "Header Font",
+            "options": [
+              {
+                "value": "playfair",
+                "label": "Playfair"
+              },
+              {
+                "value": "montserrat",
+                "label": "Montserrat"
+              },
+              {
+                "value": "quickbrush",
+                "label": "Quickbrush"
+              }
+            ]
+          },
+          {
+            "type": "textarea",
+            "id": "paragraph",
+            "label": "Paragraph",
+            "info": "Up to 130 characters",
+            "default": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat."
+          },
+          {
+            "type": "text",
+            "id": "button_label",
+            "label": "Button Label"
+          },
+          {
+            "type": "url",
+            "id": "button_link",
+            "label": "Button Link"
+          },
+          {
+            "type": "header",
+            "content": "Hero Image",
+            "info": "Hero behaviour depends on the use of specific aspect ratio images at mobile and desktop, regardless of layouts."
+          },
+          {
+            "type": "image_picker",
+            "id": "image_desktop",
+            "label": "Hero Image (Desktop)",
+            "info": "Recommended size: 2880w x 848h (or equivalent aspect ratio)"
+          },
+          {
+            "type": "image_picker",
+            "id": "image_mobile",
+            "label": "Hero Image (Mobile)",
+            "info": "Recommended size: 640w x 718h (or equivalent aspect ratio)"
+          },
+          {
+            "type": "header",
+            "content": "Hero Layout"
+          },
+          {
+            "type": "color",
+            "id": "text_color",
+            "label": "Text Color",
+            "default": "#12284c"
+          },
+          {
+            "type": "color",
+            "id": "text_background_color",
+            "label": "Text Background Color",
+            "default": "#d7ebf2"
+          },
+          {
+            "type": "range",
+            "id": "text_background_opacity_desktop",
+            "label": "Text Background Opacity (Desktop)",
+            "unit": "%",
+            "min": 0,
+            "max": 100,
+            "step": 1,
+            "default": 100
+          },
+          {
+            "type": "range",
+            "id": "text_background_opacity_mobile",
+            "label": "Text Background Opacity (Mobile)",
+            "unit": "%",
+            "min": 0,
+            "max": 100,
+            "step": 1,
+            "default": 100
+          },
+          {
+            "type": "checkbox",
+            "id": "text_background_desktop",
+            "label": "Show background color (desktop)",
+            "default": false
+          },
+          {
+            "type": "checkbox",
+            "id": "text_background_mobile",
+            "label": "Show background color (mobile)",
+            "default": false,
+            "info": "Will always display when using text below image mobile layout"
+          },
+          {
+            "type": "select",
+            "id": "image_position_desktop",
+            "label": "Image Position (Desktop)",
+            "options": [
+              {
+                "value": "image-right",
+                "label": "Image Right / Text Left"
+              },
+              {
+                "value": "image-left",
+                "label": "Image Left / Text Right"
+              }
+            ]
+          },
+          {
+            "type": "select",
+            "id": "image_position_mobile",
+            "label": "Image Position (Mobile)",
+            "options": [
+              {
+                "value": "image-behind",
+                "label": "Image Behind Text (Overlay)"
+              },
+              {
+                "value": "image-above",
+                "label": "Image Above Text (Unobscured)"
+              }
+            ]
+          },
+          {
+            "type": "select",
+            "id": "text_alignment",
+            "label": "Text Alignment",
+            "options": [
+              {
+                "value": "text-left",
+                "label": "Text Left"
+              },
+              {
+                "value": "text-center",
+                "label": "Text Center"
+              },
+              {
+                "value": "text-right",
+                "label": "Text Right"
+              }
+            ],
+            "info": "Applies to desktop only, mobile text is always centered."
+          }
+        ]
+      },
+      {
+        "type": "banner",
+        "name": "Banner with Text",
+        "settings": [
+          {
+            "type": "header",
+            "content": "Banner Images"
+          },
+          {
+            "type": "image_picker",
+            "id": "desktop_image",
+            "label": "Desktop Image",
+            "info": "Recommended image size minimum (1440px w x 325px h)"
+          },
+          {
+            "type": "image_picker",
+            "id": "mobile_image",
+            "label": "Mobile Image",
+            "info": "Recommended image size minimum (410px w x 329px h)"
+          },
+          {
+            "type": "color",
+            "id": "background_color",
+            "label": "Section background color",
+            "default": "#A68758",
+            "info": "Visible only if no background image is selected."
+          },
+          {
+            "type": "header",
+            "content": "Banner Content"
+          },
+          {
+            "type": "text",
+            "id": "subheading",
+            "label": "Sub-heading",
+            "default": "Subheading",
+            "info": "Subheading is only visible if no logo is present."
+          },
+          {
+            "type": "color",
+            "id": "subheading_color",
+            "label": "Subheading color",
+            "default": "#ffffff"
+          },
+          {
+            "type": "text",
+            "id": "title",
+            "label": "Heading",
+            "default": "Heading"
+          },
+          {
+            "type": "select",
+            "id": "title_style",
+            "label": "Title style",
+            "options": [
+              {
+                "value": "1",
+                "label": "Playfair"
+              },
+              {
+                "value": "2",
+                "label": "Montserrat"
+              }
+            ],
+            "default": "1",
+            "info": "Color defined in next setting"
+          },
+          {
+            "type": "color",
+            "id": "title_color",
+            "label": "Title color",
+            "default": "#ffffff"
+          },
+          {
+            "type": "textarea",
+            "id": "content",
+            "label": "Text content",
+            "default": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat."
+          },
+          {
+            "type": "color",
+            "id": "body_color",
+            "label": "Content color",
+            "default": "#ffffff"
+          },
+          {
+            "type": "url",
+            "id": "link_url",
+            "label": "Link",
+            "default": "/"
+          },
+          {
+            "type": "text",
+            "id": "link_text",
+            "label": "Link Text",
+            "default": "Shop Now"
+          },
+          {
+            "type": "color",
+            "id": "link_color",
+            "label": "Link color",
+            "default": "#ffffff"
+          }
+        ]
+      },
+      {
+        "type": "steps-header",
+        "name": "Heading for Steps Section",
+        "settings": [
+          {
+            "type": "color",
+            "id": "background_color",
+            "label": "Section Background Color",
+            "default": "#d7ebf2"
+          },
+          {
+            "type": "text",
+            "id": "subheader",
+            "label": "Subheader",
+            "info": "Appears above heading",
+            "default": "Subheader"
+          },
+          {
+            "type": "text",
+            "id": "title",
+            "label": "Heading",
+            "default": "Title"
+          },
+          {
+            "type": "textarea",
+            "id": "paragraph",
+            "label": "Paragraph",
+            "info": "Up to 130 characters",
+            "default": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat."
+          }
+        ]
+      },
+      {
+        "type": "steps",
+        "name": "Steps Section",
+        "settings": [
+          {
+            "type": "header",
+            "content": "Step"
+          },
+          {
+            "type": "color",
+            "id": "background_color",
+            "label": "Section Background Color",
+            "default": "#d7ebf2"
+          },
+          {
+            "type": "image_picker",
+            "id": "img",
+            "label": "Image",
+            "info": "Recommended minimum size (600px w by 600px h)"
+          },
+          {
+            "type": "select",
+            "id": "arrow_type",
+            "label": "Arrow Type",
+            "options": [
+              {
+                "value": "none",
+                "label": "None"
+              },
+              {
+                "value": "solid",
+                "label": "Solid"
+              },
+              {
+                "value": "line",
+                "label": "Line"
+              }
+            ],
+            "default": "line"
+          },
+          {
+            "type": "text",
+            "id": "subheader",
+            "label": "Subheader",
+            "info": "Appears above heading"
+          },
+          {
+            "type": "text",
+            "id": "title",
+            "label": "Title",
+            "default": "Title"
+          },
+          {
+            "type": "textarea",
+            "id": "content",
+            "label": "Text",
+            "info": "Up to 130 characters",
+            "default": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat."
+          },
+          {
+            "type": "text",
+            "id": "link_label",
+            "label": "Link Text",
+            "default": "Shop Full Size Product"
+          },
+          {
+            "type": "url",
+            "id": "link_url",
+            "label": "Link URL"
+          }
+        ]
+      },
+      {
+        "type": "featured-looks",
+        "name": "Featured Looks",
+        "settings": [
+          {
+            "type": "header",
+            "content": "Text Content"
+          },
+          {
+            "type": "color",
+            "id": "bg_color",
+            "label": "Text Background Color",
+            "default": "#ffffff"
+          },
+          {
+            "type": "color",
+            "id": "text_color",
+            "label": "Text Color",
+            "default": "#000000"
+          },
+          {
+            "type": "text",
+            "id": "title",
+            "label": "Heading",
+            "default": "Title"
+          },
+          {
+            "type": "textarea",
+            "id": "paragraph",
+            "label": "Paragraph",
+            "info": "Up to 130 characters",
+            "default": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat."
+          },
+          {
+            "type": "header",
+            "content": "Images",
+            "info": "There must be 2 images for section to display properly."
+          },
+          {
+            "type": "image_picker",
+            "id": "image_left",
+            "label": "Image on the Left (1st)",
+            "info": "Recommended minimum size (459px w by 363px h)"
+          },
+          {
+            "type": "image_picker",
+            "id": "image_right",
+            "label": "Image on the Right (2nd)",
+            "info": "Recommended minimum size (459px w by 363px h)"
+          },
+          {
+            "type": "header",
+            "content": "Products",
+            "info": "Please select 4 products"
+          },
+          {
+            "type": "product",
+            "id": "product_1",
+            "label": "Product 1"
+          },
+          {
+            "type": "product",
+            "id": "product_2",
+            "label": "Product 2"
+          },
+          {
+            "type": "product",
+            "id": "product_3",
+            "label": "Product 3"
+          },
+          {
+            "type": "product",
+            "id": "product_4",
+            "label": "Product 4"
+          }
+        ]
+      },
+      {
+        "type": "tabbed-content",
+        "name": "Tabbed Content",
+        "settings": [
+          {
+            "type": "header",
+            "content": "Tabbed Content Settings"
+          },
+          {
+            "type": "paragraph",
+            "content": "Max 3 tabs allowed"
+          },
+          {
+            "type": "select",
+            "id": "tab_size",
+            "label": "Number of Tabs",
+            "options": [
+              {
+                "value": "1",
+                "label": "1"
+              },
+              {
+                "value": "2",
+                "label": "2"
+              },
+              {
+                "value": "3",
+                "label": "3"
+              }
+            ]
+          },
+          {
+            "type": "select",
+            "id": "header_font",
+            "label": "Heading Font",
+            "options": [
+              {
+                "value": "playfair",
+                "label": "Playfair"
+              },
+              {
+                "value": "montserrat",
+                "label": "Montserrat"
+              }
+            ]
+          },
+          {
+            "type": "header",
+            "content": "Tab 1 Settings"
+          },
+          {
+            "type": "color",
+            "id": "text_background_color_1",
+            "label": "Tab 1 Text Background Color",
+            "default": "#ffffff"
+          },
+          {
+            "type": "color",
+            "id": "text_font_color_1",
+            "label": "Tab 1 Text Font Color",
+            "default": "#12284C"
+          },
+          {
+            "type": "image_picker",
+            "id": "image_1",
+            "label": "Image",
+            "info": "1200 x 1200px .jpg recommended"
+          },
+          {
+            "type": "text",
+            "id": "subheading_1",
+            "label": "Sub-heading",
+            "default": "Sub-heading"
+          },
+          {
+            "type": "text",
+            "id": "heading_1",
+            "label": "Heading",
+            "default": "Heading"
+          },
+          {
+            "type": "richtext",
+            "id": "content_1",
+            "label": "Text",
+            "default": "<p>Add your own custom content to give more information about your store, availability details...</p>"
+          },
+          {
+            "type": "text",
+            "id": "link_label_1",
+            "label": "Link Label"
+          },
+          {
+            "type": "url",
+            "id": "link_1",
+            "label": "Link to content"
+          },
+          { 
+            "type": "select",
+            "id": "mobile_text_alignment_1",
+            "label": "Mobile text alignment",
+            "options": [
+              {
+                "value": "left",
+                "label": "Left"
+              },  
+              {
+                "value": "center",
+                "label": "Center"
+              }
+            ],
+            "default": "center"
+          },
+          {
+            "type": "header",
+            "content": "Tab 2 Settings"
+          },
+          {
+            "type": "color",
+            "id": "text_background_color_2",
+            "label": "Tab 2 Text Background Color",
+            "default": "#ffffff"
+          },
+          {
+            "type": "color",
+            "id": "text_font_color_2",
+            "label": "Tab 2 Text Font Color",
+            "default": "#12284C"
+          },
+          {
+            "type": "image_picker",
+            "id": "image_2",
+            "label": "Image",
+            "info": "1200 x 1200px .jpg recommended"
+          },
+          {
+            "type": "text",
+            "id": "subheading_2",
+            "label": "Sub-heading",
+            "default": "Sub-heading"
+          },
+          {
+            "type": "text",
+            "id": "heading_2",
+            "label": "Heading",
+            "default": "Heading"
+          },
+          {
+            "type": "richtext",
+            "id": "content_2",
+            "label": "Text",
+            "default": "<p>Add your own custom content to give more information about your store, availability details...</p>"
+          },
+          {
+            "type": "text",
+            "id": "link_label_2",
+            "label": "Link Label"
+          },
+          {
+            "type": "url",
+            "id": "link_2",
+            "label": "Link to content"
+          },
+          { 
+            "type": "select",
+            "id": "mobile_text_alignment_2",
+            "label": "Mobile text alignment",
+            "options": [
+              {
+                "value": "left",
+                "label": "Left"
+              },  
+              {
+                "value": "center",
+                "label": "Center"
+              }
+            ],
+            "default": "center"
+          },
+          {
+            "type": "header",
+            "content": "Tab 3 Settings"
+          },
+          {
+            "type": "color",
+            "id": "text_background_color_3",
+            "label": "Tab 3 Text Background Color",
+            "default": "#ffffff"
+          },
+          {
+            "type": "color",
+            "id": "text_font_color_3",
+            "label": "Tab 3 Text Font Color",
+            "default": "#12284C"
+          },
+          {
+            "type": "image_picker",
+            "id": "image_3",
+            "label": "Image",
+            "info": "1200 x 1200px .jpg recommended"
+          },
+          {
+            "type": "text",
+            "id": "subheading_3",
+            "label": "Sub-heading",
+            "default": "Sub-heading"
+          },
+          {
+            "type": "text",
+            "id": "heading_3",
+            "label": "Heading",
+            "default": "Heading"
+          },
+          {
+            "type": "richtext",
+            "id": "content_3",
+            "label": "Text",
+            "default": "<p>Add your own custom content to give more information about your store, availability details...</p>"
+          },
+          {
+            "type": "text",
+            "id": "link_label_3",
+            "label": "Link Label"
+          },
+          {
+            "type": "url",
+            "id": "link_3",
+            "label": "Link to content"
+          },
+          { 
+            "type": "select",
+            "id": "mobile_text_alignment_3",
+            "label": "Mobile text alignment",
+            "options": [
+              {
+                "value": "left",
+                "label": "Left"
+              },  
+              {
+                "value": "center",
+                "label": "Center"
+              }
+            ],
+            "default": "center"
+          }
+        ]
+      },
+      {
+        "type": "column-blocks",
+        "name": "Content Column Blocks",
+        "settings": [
+          {
+            "type": "text",
+            "id": "subheader",
+            "label": "Subheader",
+            "default": "Subheader"
+          },
+          {
+            "type": "text",
+            "id": "title",
+            "label": "Title",
+            "default": "Header"
+          },
+          {
+            "type": "header",
+            "content": "Content Block #1"
+          },
+          {
+            "type": "product",
+            "id": "product_1",
+            "label": "Product 1"
+          },
+          {
+            "type": "image_picker",
+            "id": "block_img_1",
+            "label": "Block Image",
+            "info": "Optional. If no image is chosen, the selected product's main image will display. Recommended minimum size (600px w by 600px h)"
+          },
+          {
+            "type": "text",
+            "id": "block_title_1",
+            "label": "Block Title",
+            "default": "Title",
+            "info": "Optional. If empty, product title will show."
+          },
+          {
+            "type": "text",
+            "id": "block_text_1",
+            "label": "Block Text",
+            "default": "Text"
+          },
+          {
+            "type": "text",
+            "id": "block_link_label_1",
+            "label": "Block Link Label",
+            "default": "Shop Now"
+          },
+          {
+            "type": "header",
+            "content": "Content Block #2"
+          },
+          {
+            "type": "product",
+            "id": "product_2",
+            "label": "Product 2"
+          },
+          {
+            "type": "image_picker",
+            "id": "block_img_2",
+            "label": "Block Image",
+            "info": "Optional. If no image is chosen, the selected product's main image will display. Recommended minimum size (600px w by 600px h)"
+          },
+          {
+            "type": "text",
+            "id": "block_title_2",
+            "label": "Block Title",
+            "default": "Title",
+            "info": "Optional. If empty, product title will show."
+          },
+          {
+            "type": "text",
+            "id": "block_text_2",
+            "label": "Block Text",
+            "default": "Text"
+          },
+          {
+            "type": "text",
+            "id": "block_link_label_2",
+            "label": "Block Link Label",
+            "default": "Shop Now"
+          },
+          {
+            "type": "header",
+            "content": "Content Block #3"
+          },
+          {
+            "type": "product",
+            "id": "product_3",
+            "label": "Product 3"
+          },
+          {
+            "type": "image_picker",
+            "id": "block_img_3",
+            "label": "Block Image",
+            "info": "Optional. If no image is chosen, the selected product's main image will display. Recommended minimum size (600px w by 600px h)"
+          },
+          {
+            "type": "text",
+            "id": "block_title_3",
+            "label": "Block Title",
+            "default": "Title",
+            "info": "Optional. If empty, product title will show."
+          },
+          {
+            "type": "text",
+            "id": "block_text_3",
+            "label": "Block Text",
+            "default": "Text"
+          },
+          {
+            "type": "text",
+            "id": "block_link_label_3",
+            "label": "Block Link Label",
+            "default": "Shop Now"
+          },
+          {
+            "type": "header",
+            "content": "Content Block #4"
+          },
+          {
+            "type": "product",
+            "id": "product_4",
+            "label": "Product 4"
+          },
+          {
+            "type": "image_picker",
+            "id": "block_img_4",
+            "label": "Block Image",
+            "info": "Optional. If no image is chosen, the selected product's main image will display. Recommended minimum size (600px w by 600px h)"
+          },
+          {
+            "type": "text",
+            "id": "block_title_4",
+            "label": "Block Title",
+            "default": "Title",
+            "info": "Optional. If empty, product title will show."
+          },
+          {
+            "type": "text",
+            "id": "block_text_4",
+            "label": "Block Text",
+            "default": "Text"
+          },
+          {
+            "type": "text",
+            "id": "block_link_label_4",
+            "label": "Block Link Label",
+            "default": "Shop Now"
+          }
+        ]
+      },
+      {
+        "type": "code",
+        "name": "Custom Code",
+        "settings": [
+          {
+            "type": "header",
+            "content": "Custom Code Block"
+          },
+          {
+            "type": "paragraph",
+            "content": "Outputs as HTML so any CSS must be wrapped in a <style> tag and JavaScript in a <script> tag."
+          },
+          {
+            "type": "textarea",
+            "id": "code",
+            "label": "Paste code here"
+          }
+        ]
+      },
+      {
+        "type": "content-blocks",
+        "name": "Content Blocks",
+        "settings": [
+          {
+            "type": "header",
+            "content": "Content Blocks Settings"
+          },
+          {
+            "type": "text",
+            "id": "title",
+            "label": "Heading"
+          },
+          {
+            "type": "url",
+            "id": "title_link",
+            "label": "Heading Link",
+            "info": "Leave blank if no link required"
+          },
+          {
+            "type": "paragraph",
+            "content": "Max 4 blocks allowed"
+          },
+          {
+            "type": "header",
+            "content": "Content Block #1"
+          },
+          {
+            "type": "image_picker",
+            "id": "block_1_img",
+            "label": "Block 1 Image",
+            "info": "Recommended minimum size (600px w by 600px h)"
+          },
+          {
+            "type": "text",
+            "id": "block_1_title",
+            "label": "Block 1 Title",
+            "default": "Title"
+          },
+          {
+            "type": "url",
+            "id": "block_1_url",
+            "label": "Block 1 Link"
+          },
+          {
+            "type": "header",
+            "content": "Content Block #2"
+          },
+          {
+            "type": "image_picker",
+            "id": "block_2_img",
+            "label": "Block 2 Image",
+            "info": "Recommended minimum size (600px w by 600px h)"
+          },
+          {
+            "type": "text",
+            "id": "block_2_title",
+            "label": "Block 2 Title",
+            "default": "Title"
+          },
+          {
+            "type": "url",
+            "id": "block_2_url",
+            "label": "Block 2 Link"
+          },
+          {
+            "type": "header",
+            "content": "Content Block #3"
+          },
+          {
+            "type": "image_picker",
+            "id": "block_3_img",
+            "label": "Block 3 Image",
+            "info": "Recommended minimum size (600px w by 600px h)"
+          },
+          {
+            "type": "text",
+            "id": "block_3_title",
+            "label": "Block 3 Title",
+            "default": "Title"
+          },
+          {
+            "type": "url",
+            "id": "block_3_url",
+            "label": "Block 3 Link"
+          },
+          {
+            "type": "header",
+            "content": "Content Block #4"
+          },
+          {
+            "type": "image_picker",
+            "id": "block_4_img",
+            "label": "Block 4 Image",
+            "info": "Recommended minimum size (600px w by 600px h)"
+          },
+          {
+            "type": "text",
+            "id": "block_4_title",
+            "label": "Block 4 Title",
+            "default": "Title"
+          },
+          {
+            "type": "url",
+            "id": "block_4_url",
+            "label": "Block 4 Link"
+          }
+        ]
+      },
+      {
+        "type": "shop-the-look",
+        "name": "Shop the Look",
+        "settings": [
+          {
+            "type": "paragraph",
+            "content": "For best results (especially on mobile), we recommend using images with the same dimensions (for products images as well). Not doing so may result in layout issues."
+          },
+          {
+            "type": "paragraph",
+            "content": "To see updates to products and carousels make sure you save the settings in the customizer. This adapted section will not automatically update without saving first."
+          },
+          {
+            "type": "header",
+            "content": "Content Blocks Settings"
+          },
+          {
+            "type": "text",
+            "id": "title",
+            "label": "Heading"
+          },
+          {
+            "type": "paragraph",
+            "content": "Max 4 blocks allowed"
+          },
+          {
+            "type": "header",
+            "content": "Content Block #1"
+          },
+          {
+            "type": "checkbox",
+            "id": "enable_look_1",
+            "label": "Enable Look 1",
+            "info": "Toggle entire look on and off."
+          },
+          {
+            "type": "image_picker",
+            "id": "block_1_image",
+            "label": "Block 1 Image",
+            "info": "975 x 1185px .jpg recommended (vertical image) or 1200 x 1200px .jpg recommended (square image)."
+          },
+          {
+            "type": "header",
+            "content": "Product 1"
+          },
+          {
+            "type": "product",
+            "id": "block_1_product_1",
+            "label": "Product",
+            "info": "Product not showing correctly? [Learn more](http://support.maestrooo.com/article/153-home-page-shop-the-look-section-is-displaying-incorrect-products)."
+          },
+          {
+            "type": "range",
+            "id": "block_1_product_1_horizontal_position",
+            "label": "Horizontal position",
+            "min": 5,
+            "max": 95,
+            "step": 1,
+            "unit": "%",
+            "default": 15
+          },
+          {
+            "type": "range",
+            "id": "block_1_product_1_vertical_position",
+            "label": "Vertical position",
+            "min": 5,
+            "max": 95,
+            "step": 1,
+            "unit": "%",
+            "default": 15
+          },
+          {
+            "type": "header",
+            "content": "Product 2"
+          },
+          {
+            "type": "product",
+            "id": "block_1_product_2",
+            "label": "Product",
+            "info": "Product not showing correctly? [Learn more](http://support.maestrooo.com/article/153-home-page-shop-the-look-section-is-displaying-incorrect-products)."
+          },
+          {
+            "type": "range",
+            "id": "block_1_product_2_horizontal_position",
+            "label": "Horizontal position",
+            "min": 5,
+            "max": 95,
+            "step": 1,
+            "unit": "%",
+            "default": 50
+          },
+          {
+            "type": "range",
+            "id": "block_1_product_2_vertical_position",
+            "label": "Vertical position",
+            "min": 5,
+            "max": 95,
+            "step": 1,
+            "unit": "%",
+            "default": 50
+          },
+          {
+            "type": "header",
+            "content": "Product 3"
+          },
+          {
+            "type": "product",
+            "id": "block_1_product_3",
+            "label": "Product",
+            "info": "Product not showing correctly? [Learn more](http://support.maestrooo.com/article/153-home-page-shop-the-look-section-is-displaying-incorrect-products)."
+          },
+          {
+            "type": "range",
+            "id": "block_1_product_3_horizontal_position",
+            "label": "Horizontal position",
+            "min": 5,
+            "max": 95,
+            "step": 1,
+            "unit": "%",
+            "default": 85
+          },
+          {
+            "type": "range",
+            "id": "block_1_product_3_vertical_position",
+            "label": "Vertical position",
+            "min": 10,
+            "max": 90,
+            "step": 1,
+            "unit": "%",
+            "default": 85
+          },
+          {
+            "type": "header",
+            "content": "Content Block #2"
+          },
+          {
+            "type": "checkbox",
+            "id": "enable_look_2",
+            "label": "Enable Look 2",
+            "info": "Toggle entire look on and off."
+          },
+          {
+            "type": "image_picker",
+            "id": "block_2_image",
+            "label": "Block 2 Image",
+            "info": "975 x 1185px .jpg recommended (vertical image) or 1200 x 1200px .jpg recommended (square image)."
+          },
+          {
+            "type": "header",
+            "content": "Product 1"
+          },
+          {
+            "type": "product",
+            "id": "block_2_product_1",
+            "label": "Product",
+            "info": "Product not showing correctly? [Learn more](http://support.maestrooo.com/article/153-home-page-shop-the-look-section-is-displaying-incorrect-products)."
+          },
+          {
+            "type": "range",
+            "id": "block_2_product_1_horizontal_position",
+            "label": "Horizontal position",
+            "min": 5,
+            "max": 95,
+            "step": 1,
+            "unit": "%",
+            "default": 15
+          },
+          {
+            "type": "range",
+            "id": "block_2_product_1_vertical_position",
+            "label": "Vertical position",
+            "min": 5,
+            "max": 95,
+            "step": 1,
+            "unit": "%",
+            "default": 15
+          },
+          {
+            "type": "header",
+            "content": "Product 2"
+          },
+          {
+            "type": "product",
+            "id": "block_2_product_2",
+            "label": "Product",
+            "info": "Product not showing correctly? [Learn more](http://support.maestrooo.com/article/153-home-page-shop-the-look-section-is-displaying-incorrect-products)."
+          },
+          {
+            "type": "range",
+            "id": "block_2_product_2_horizontal_position",
+            "label": "Horizontal position",
+            "min": 5,
+            "max": 95,
+            "step": 1,
+            "unit": "%",
+            "default": 50
+          },
+          {
+            "type": "range",
+            "id": "block_2_product_2_vertical_position",
+            "label": "Vertical position",
+            "min": 5,
+            "max": 95,
+            "step": 1,
+            "unit": "%",
+            "default": 50
+          },
+          {
+            "type": "header",
+            "content": "Product 3"
+          },
+          {
+            "type": "product",
+            "id": "block_2_product_3",
+            "label": "Product",
+            "info": "Product not showing correctly? [Learn more](http://support.maestrooo.com/article/153-home-page-shop-the-look-section-is-displaying-incorrect-products)."
+          },
+          {
+            "type": "range",
+            "id": "block_2_product_3_horizontal_position",
+            "label": "Horizontal position",
+            "min": 5,
+            "max": 95,
+            "step": 1,
+            "unit": "%",
+            "default": 85
+          },
+          {
+            "type": "range",
+            "id": "block_2_product_3_vertical_position",
+            "label": "Vertical position",
+            "min": 10,
+            "max": 90,
+            "step": 1,
+            "unit": "%",
+            "default": 85
+          },
+          {
+            "type": "header",
+            "content": "Content Block #3"
+          },
+          {
+            "type": "checkbox",
+            "id": "enable_look_3",
+            "label": "Enable Look 3",
+            "info": "Toggle entire look on and off."
+          },
+          {
+            "type": "image_picker",
+            "id": "block_3_image",
+            "label": "Block 3 Image",
+            "info": "975 x 1185px .jpg recommended (vertical image) or 1200 x 1200px .jpg recommended (square image)."
+          },
+          {
+            "type": "header",
+            "content": "Product 1"
+          },
+          {
+            "type": "product",
+            "id": "block_3_product_1",
+            "label": "Product",
+            "info": "Product not showing correctly? [Learn more](http://support.maestrooo.com/article/153-home-page-shop-the-look-section-is-displaying-incorrect-products)."
+          },
+          {
+            "type": "range",
+            "id": "block_3_product_1_horizontal_position",
+            "label": "Horizontal position",
+            "min": 5,
+            "max": 95,
+            "step": 1,
+            "unit": "%",
+            "default": 15
+          },
+          {
+            "type": "range",
+            "id": "block_3_product_1_vertical_position",
+            "label": "Vertical position",
+            "min": 5,
+            "max": 95,
+            "step": 1,
+            "unit": "%",
+            "default": 15
+          },
+          {
+            "type": "header",
+            "content": "Product 2"
+          },
+          {
+            "type": "product",
+            "id": "block_3_product_2",
+            "label": "Product",
+            "info": "Product not showing correctly? [Learn more](http://support.maestrooo.com/article/153-home-page-shop-the-look-section-is-displaying-incorrect-products)."
+          },
+          {
+            "type": "range",
+            "id": "block_3_product_2_horizontal_position",
+            "label": "Horizontal position",
+            "min": 5,
+            "max": 95,
+            "step": 1,
+            "unit": "%",
+            "default": 50
+          },
+          {
+            "type": "range",
+            "id": "block_3_product_2_vertical_position",
+            "label": "Vertical position",
+            "min": 5,
+            "max": 95,
+            "step": 1,
+            "unit": "%",
+            "default": 50
+          },
+          {
+            "type": "header",
+            "content": "Product 3"
+          },
+          {
+            "type": "product",
+            "id": "block_3_product_3",
+            "label": "Product",
+            "info": "Product not showing correctly? [Learn more](http://support.maestrooo.com/article/153-home-page-shop-the-look-section-is-displaying-incorrect-products)."
+          },
+          {
+            "type": "range",
+            "id": "block_3_product_3_horizontal_position",
+            "label": "Horizontal position",
+            "min": 5,
+            "max": 95,
+            "step": 1,
+            "unit": "%",
+            "default": 85
+          },
+          {
+            "type": "range",
+            "id": "block_3_product_3_vertical_position",
+            "label": "Vertical position",
+            "min": 10,
+            "max": 90,
+            "step": 1,
+            "unit": "%",
+            "default": 85
+          },
+          {
+            "type": "header",
+            "content": "Content Block #4"
+          },
+          {
+            "type": "checkbox",
+            "id": "enable_look_4",
+            "label": "Enable Look 4",
+            "info": "Toggle entire look on and off."
+          },
+          {
+            "type": "image_picker",
+            "id": "block_4_image",
+            "label": "Block 4 Image",
+            "info": "975 x 1185px .jpg recommended (vertical image) or 1200 x 1200px .jpg recommended (square image)."
+          },
+          {
+            "type": "header",
+            "content": "Product 1"
+          },
+          {
+            "type": "product",
+            "id": "block_4_product_1",
+            "label": "Product",
+            "info": "Product not showing correctly? [Learn more](http://support.maestrooo.com/article/153-home-page-shop-the-look-section-is-displaying-incorrect-products)."
+          },
+          {
+            "type": "range",
+            "id": "block_4_product_1_horizontal_position",
+            "label": "Horizontal position",
+            "min": 5,
+            "max": 95,
+            "step": 1,
+            "unit": "%",
+            "default": 15
+          },
+          {
+            "type": "range",
+            "id": "block_4_product_1_vertical_position",
+            "label": "Vertical position",
+            "min": 5,
+            "max": 95,
+            "step": 1,
+            "unit": "%",
+            "default": 15
+          },
+          {
+            "type": "header",
+            "content": "Product 2"
+          },
+          {
+            "type": "product",
+            "id": "block_4_product_2",
+            "label": "Product",
+            "info": "Product not showing correctly? [Learn more](http://support.maestrooo.com/article/153-home-page-shop-the-look-section-is-displaying-incorrect-products)."
+          },
+          {
+            "type": "range",
+            "id": "block_4_product_2_horizontal_position",
+            "label": "Horizontal position",
+            "min": 5,
+            "max": 95,
+            "step": 1,
+            "unit": "%",
+            "default": 50
+          },
+          {
+            "type": "range",
+            "id": "block_4_product_2_vertical_position",
+            "label": "Vertical position",
+            "min": 5,
+            "max": 95,
+            "step": 1,
+            "unit": "%",
+            "default": 50
+          },
+          {
+            "type": "header",
+            "content": "Product 3"
+          },
+          {
+            "type": "product",
+            "id": "block_4_product_3",
+            "label": "Product",
+            "info": "Product not showing correctly? [Learn more](http://support.maestrooo.com/article/153-home-page-shop-the-look-section-is-displaying-incorrect-products)."
+          },
+          {
+            "type": "range",
+            "id": "block_4_product_3_horizontal_position",
+            "label": "Horizontal position",
+            "min": 5,
+            "max": 95,
+            "step": 1,
+            "unit": "%",
+            "default": 85
+          },
+          {
+            "type": "range",
+            "id": "block_4_product_3_vertical_position",
+            "label": "Vertical position",
+            "min": 10,
+            "max": 90,
+            "step": 1,
+            "unit": "%",
+            "default": 85
+          }
+        ]
+      },
+      {
+        "type": "featured-collections",
+        "name": "Featured Collections",
+        "settings": [
+          {
+            "type": "collection",
+            "id": "collection",
+            "label": "Collection"
+          },
+          {
+            "type": "text",
+            "id": "title",
+            "label": "Heading",
+            "info": "If none is set, collection title is used."
+          },
+          {
+            "type": "url",
+            "id": "link",
+            "label": "Header Link"
+          },
+          {
+            "type": "text",
+            "id": "subtitle",
+            "label": "Description",
+            "info": "A short description or blurb about the collection."
+          }
+        ]
+      }
+    ]
+  }
+{% endschema %}
