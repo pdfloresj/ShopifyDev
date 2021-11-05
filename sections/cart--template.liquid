@@ -26,20 +26,20 @@
           <div class="cart__floralkitoption">
             <img src="//cdn.shopify.com/s/files/1/0516/8968/5154/products/Chrysal-Flower-Care-Kit-350_87c595ce_900x.jpg?v=1614718354" alt="" />
             <h3>Chrysal Floral Care Kit</h3>
-            <input type="button" class="add-floral-kit-to-cart-btn" value="Add to Cart" onClick="addItemToCart(39854528725154, 1, 6912)">
+            <input type="button" class="add-floral-kit-to-cart-btn" value="Add to Cart" onClick="addItemToCart(40513560281294, 1, 6912)">
             {% comment %} TODO: addItemToCart {% endcomment %}
           </div>
           <hr class="floralkitoptions_hr" />
           <div class="cart__floralkitoption">
             <img src="//cdn.shopify.com/s/files/1/0516/8968/5154/products/basic-floral-care-kit-flat-lay-350_4cd3c47f_900x.jpg?v=1614718657" alt="" />
             <h3>Basic Floral Supply Kit</h3>
-            <input type="button" class="add-floral-kit-to-cart-btn" value="Add to Cart" onClick="addItemToCart(39854536327330, 1, 7525)">
+            <input type="button" class="add-floral-kit-to-cart-btn" value="Add to Cart" onClick="addItemToCart(40513559691470, 1, 7525)">
           </div>
           <hr class="floralkitoptions_hr" />
           <div class="cart__floralkitoption">
             <img src="//cdn.shopify.com/s/files/1/0516/8968/5154/products/everything-floral-tool-kit-flat-lay-350_a93b728c_900x.jpg?v=1614719909" alt="" />
             <h3>Deluxe DIY Flower Design Tool Kit</h3>
-            <input type="button" class="add-floral-kit-to-cart-btn" value="Add to Cart" onClick="addItemToCart(39854578761890, 1, 9589)">
+            <input type="button" class="add-floral-kit-to-cart-btn" value="Add to Cart" onClick="addItemToCart(40513549697230, 1, 9589)">
           </div>
         </div>
       </div>	
@@ -112,7 +112,7 @@
                   {% endif %}
                 </div>
                 
-                {% if item.id == 39557608407202 %}
+                {% if item.id == 40513545797838 %}
                 <div class="cart__item-quantity" style="pointer-events: none">
                   <div class="cart__item-qty-selector">
                     <input
@@ -327,13 +327,13 @@ async function addItemToCart(variant_id, qty, handle) {
       var itemDeliveryDate = new Date(expectedDeliveryDate);
       var deliveryDay = itemDeliveryDate.getDay();
 
-      if(deliveryDay === 6 && cartItem.variant_id !== 39557608407202) {
+      if(deliveryDay === 6 && cartItem.variant_id !== 40513545797838) {
         numberOfSaturdayDeliveryCharges += cartItem.quantity;
         hasSaturdayDelivery = true;
         itemSaturdayDeliveryDate = expectedDeliveryDate;
       }
 
-      if(cartItem.variant_id === 39557608407202) {
+      if(cartItem.variant_id === 40513545797838) {
         hasSaturdayDeliveryProduct = true;
         numberfOfSaturdaySurcharges = cartItem.quantity;
       }
@@ -343,7 +343,7 @@ async function addItemToCart(variant_id, qty, handle) {
       jQuery.ajax({
         type: 'POST',
         url: '/cart/update.js',
-        data: {updates: {39557608407202: numberOfSaturdayDeliveryCharges}},
+        data: {updates: {40513545797838: numberOfSaturdayDeliveryCharges}},
         dataType: 'json',
         success: function() { 
           location.reload()
@@ -355,7 +355,7 @@ async function addItemToCart(variant_id, qty, handle) {
       jQuery.ajax({
         type: 'POST',
         url: '/cart/update.js',
-        data: {updates: {39557608407202: 0}},
+        data: {updates: {40513545797838: 0}},
         dataType: 'json',
         success: function() { 
           location.reload()

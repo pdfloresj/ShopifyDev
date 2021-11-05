@@ -111,7 +111,7 @@
         productTypes.push(item.product_type);
       }
 
-      if (item.variant_id === 39557608407202) {
+      if (item.variant_id === 40513545797838) {
         itemContainer.append(renderSaturdaySurchargeItem(itemData));
       } else {
         itemContainer.append(renderCartItem(itemData));

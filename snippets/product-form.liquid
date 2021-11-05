@@ -402,21 +402,21 @@ $(function () {
       var deliveryDay = itemDelivery.getDay();
 
       // If delivery date is saturday
-      if (deliveryDay === 6 && cartItem.variant_id !== 39557608407202) {
+      if (deliveryDay === 6 && cartItem.variant_id !== 40513545797838) {
         hasSaturdayDelivery = true;
-        const existingSaturdayDelivery = initialCartItems.find(item => item.variant_id === 39557608407202);
+        const existingSaturdayDelivery = initialCartItems.find(item => item.variant_id === 40513545797838);
         const existingDeliveryDate = existingSaturdayDelivery && existingSaturdayDelivery.properties["Delivery Date"];
         saturdayDeliveryDate = existingDeliveryDate || expectedDeliveryDate;
       }
 
-      if (cartItem.variant_id === 39557608407202) {
+      if (cartItem.variant_id === 40513545797838) {
         hasSaturdayDeliveryProduct = true;
       }
     });
 
     if (hasSaturdayDelivery) {
       await cartService.addItemToCart(
-        39557608407202,
+        40513545797838,
         quantity,
         saturdayDeliveryDate,
         "saturday-delivery"

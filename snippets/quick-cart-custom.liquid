@@ -37,7 +37,7 @@
                 <img src="//cdn.shopify.com/s/files/1/0516/8968/5154/products/Chrysal-Flower-Care-Kit-350_87c595ce_900x.jpg?v=1614718354" alt="" />
                 <div class="floral-kit-option--content">
                   <h3>Chrysal Floral Care Kit</h3>
-                  <input type="button" class="qc--add-kit-to-cart-btn" value="Add to Cart" onClick="addKitToCart(39854528725154, 1, 6912)">
+                  <input type="button" class="qc--add-kit-to-cart-btn" value="Add to Cart" onClick="addKitToCart(40513560281294, 1, 6912)">
                   {% comment %} TODO: addKitToCart {% endcomment %}
                 </div>
               </div>
@@ -46,7 +46,7 @@
                 <img src="//cdn.shopify.com/s/files/1/0516/8968/5154/products/basic-floral-care-kit-flat-lay-350_4cd3c47f_900x.jpg?v=1614718657" alt="" />
                 <div class="floral-kit-option--content">
                   <h3>Basic Floral Supply Kit</h3>
-                  <input type="button" class="qc--add-kit-to-cart-btn" value="Add to Cart" onClick="addKitToCart(39854536327330, 1, 7525)">
+                  <input type="button" class="qc--add-kit-to-cart-btn" value="Add to Cart" onClick="addKitToCart(40513559691470, 1, 7525)">
                 </div>
               </div>
               <hr class="qc--floral-kit-hr" />
@@ -54,7 +54,7 @@
                 <img src="//cdn.shopify.com/s/files/1/0516/8968/5154/products/everything-floral-tool-kit-flat-lay-350_a93b728c_900x.jpg?v=1614719909" alt="" />
                 <div class="floral-kit-option--content">
                   <h3>Deluxe DIY Flower Design Tool Kit</h3>
-                  <input type="button" class="qc--add-kit-to-cart-btn" value="Add to Cart" onClick="addKitToCart(39854578761890, 1, 9589)">
+                  <input type="button" class="qc--add-kit-to-cart-btn" value="Add to Cart" onClick="addKitToCart(40513549697230, 1, 9589)">
                 </div>
               </div>
             </div>
@@ -193,12 +193,12 @@
       var formattedDate = new Date(deliveryDate);
       var deliveryDay = formattedDate.getDay();
 
-      if(deliveryDay === 6 && cartItem.variant_id !== 39557608407202) {
+      if(deliveryDay === 6 && cartItem.variant_id !== 40513545797838) {
       	quantityOfSaturdaySurcharge += cartItem.quantity;
         itemWithSaturdayExists = true;
       }
 
-      if(cartItem.variant_id === 39557608407202) {
+      if(cartItem.variant_id === 40513545797838) {
         saturdayDeliveryProduct = true;
       }
     });
@@ -209,8 +209,8 @@
       itemCount: cartItemCount,
     });
       
-      if(itemWithSaturdayExists && saturdayDeliveryProduct && id !== 39557608407202) {
-      increaseQuantity(39557608407202, quantityOfSaturdaySurcharge - 1);
+      if(itemWithSaturdayExists && saturdayDeliveryProduct && id !== 40513545797838) {
+      increaseQuantity(40513545797838, quantityOfSaturdaySurcharge - 1);
       itemWithSaturdayExists = false;
       saturdayDeliveryProduct = false;
     }
@@ -230,12 +230,12 @@
       var formattedDate = new Date(deliveryDate);
       var deliveryDay = formattedDate.getDay();
 
-      if(deliveryDay === 6 && cartItem.variant_id !== 39557608407202) {
+      if(deliveryDay === 6 && cartItem.variant_id !== 40513545797838) {
       	quantityOfSaturdaySurcharge += cartItem.quantity;
         itemWithSaturdayExists = true;
       }
 
-      if(cartItem.variant_id === 39557608407202) {
+      if(cartItem.variant_id === 40513545797838) {
         saturdayDeliveryProduct = true;
       }
     });
@@ -246,8 +246,8 @@
       itemCount: cartItemCount,
     });
       
-      if(itemWithSaturdayExists && saturdayDeliveryProduct && id !== 39557608407202) {
-      decreaseQuantity(39557608407202, quantityOfSaturdaySurcharge + 1);
+      if(itemWithSaturdayExists && saturdayDeliveryProduct && id !== 40513545797838) {
+      decreaseQuantity(40513545797838, quantityOfSaturdaySurcharge + 1);
       itemWithSaturdayExists = false;
       saturdayDeliveryProduct = false;
     }
