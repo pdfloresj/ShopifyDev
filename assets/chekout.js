@@ -2,6 +2,8 @@
  var h3Tags = document.getElementsByTagName("h3");
  var searchText = "Shipping method";
    var found;
+
+   console.log('entra checkout');
  
  for (var i = 0; i < h3Tags.length; i++) {
    if (h3Tags[i].textContent == searchText) {
