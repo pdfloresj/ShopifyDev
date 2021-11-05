@@ -9,11 +9,16 @@
     <title>{{ page_title }}</title>
 
     {{ content_for_header }}
+
+    {{ checkout_stylesheets }}
+    {{ checkout_scripts }}
   
 </head>
   <body>
+    <script type="text/javascript">
+      console.log('entro');
+    </script>
     <h1>Estoy Aqui</h1>
-    
-
+            {{ content_for_layout }}
 </body>
 </html>
