@@ -102,10 +102,10 @@
     let surchargeFeeQuantity = 0;
     let surchargeLineItem;
     for(let i = 0; i < lineItems.length; i++) {
-      if(lineItems[i].getAttribute("data-variant-id") !== "39576820252834" && lineItems[i].getAttribute("data-variant-id") !== "39557608407202"){
+      if(lineItems[i].getAttribute("data-variant-id") !== "40513543667918" && lineItems[i].getAttribute("data-variant-id") !== "39557608407202"){
         const lineItemQuantity = parseInt(lineItems[i].querySelector("td[class='product__quantity'] span").textContent.trim());
         totalItemsQuantity = totalItemsQuantity + lineItemQuantity;
-      }else if (lineItems[i].getAttribute("data-variant-id") === "39576820252834") {
+      }else if (lineItems[i].getAttribute("data-variant-id") === "40513543667918") {
         surchargeFeeQuantity = parseInt(lineItems[i].querySelector("td[class='product__quantity'] span").textContent.trim());
         surchargeLineItem = lineItems[i];
       }
