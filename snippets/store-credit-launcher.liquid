@@ -1,0 +1,21 @@
+{% assign store_domain = shop.permanent_domain %}
+<script>
+	window.StoreCreditInit = {
+		shop: '{{ store_domain }}',
+		cashback_widget_status: 0
+	}
+</script>
+
+{% if customer %}
+    {% assign storecredit_customer_id = customer.id %}
+    {% assign storecredit_customer_email = customer.email %}
+    {% assign storecredit_customer_signature = customer.id | append: 'c133a6885b35d0faa98452826f8d5bc4' | md5 %}
+
+	<script>
+		window.StoreCreditInit.customer_id = '{{ storecredit_customer_id }}';
+		window.StoreCreditInit.customer_name = '{{ customer.first_name }} {{ customer.last_name }}';
+		window.StoreCreditInit.customer_email = '{{ storecredit_customer_email }}';
+		window.StoreCreditInit.customer_signature = '{{ storecredit_customer_signature }}';
+	</script>
+{% endif %}
+
